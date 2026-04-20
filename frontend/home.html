@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Home - PowerScout</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="tema.js"></script>
+  </head>
+  <body>
+    <div id="splash-screen" class="splash-screen">
+      <div class="splash-logo"><span class="cor-power">Power</span>Scout</div>
+
+      <div id="espaco-bonequinho" class="splash-loader"></div>
+    </div>
+
+    <script>
+      const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
+      if (!usuarioLogado) window.location.href = "login.html";
+    </script>
+
+    <header class="duo-header">
+      <div class="logo"><span class="cor-power">Power</span>Scout</div>
+      <div style="display: flex; gap: 15px; align-items: center">
+        <span id="nome-user" style="color: #aaa; font-weight: bold"></span>
+        <button
+          onclick="fazerLogout()"
+          style="
+            background: none;
+            border: none;
+            color: var(--duo-red);
+            cursor: pointer;
+            font-weight: bold;
+          "
+        >
+          Sair 🚪
+        </button>
+        <button
+          id="btn-settings"
+          style="
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            outline: none;
+          "
+        >
+          ⚙️
+        </button>
+      </div>
+    </header>
+
+    <div class="home-grid">
+      <div
+        class="duo-container card-home"
+        onclick="window.location.href = 'nova-partida.html'"
+      >
+        <i>🎮</i>
+        <h2>Nova Partida</h2>
+        <p>Configurar equipas e iniciar registo</p>
+      </div>
+      <div
+        class="duo-container card-home"
+        onclick="window.location.href = 'dashboard.html'"
+      >
+        <i>📊</i>
+        <h2>Dashboard</h2>
+        <p>Estatísticas e análise da equipa</p>
+      </div>
+      <div
+        class="duo-container card-home"
+        onclick="window.location.href = 'jogadores.html'"
+      >
+        <i>👥</i>
+        <h2>Elenco</h2>
+        <p>Gerir jogadores e fotos</p>
+      </div>
+      <div
+        class="duo-container card-home"
+        onclick="window.location.href = 'partidas.html'"
+      >
+        <i>📁</i>
+        <h2>Gerenciar Partidas</h2>
+        <p>Histórico de jogos anteriores</p>
+      </div>
+    </div>
+
+    <div
+      id="modal-settings"
+      class="escondido duo-modal"
+      style="
+        width: 320px;
+        text-align: center;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 999;
+      "
+    >
+      <h4 style="color: var(--text-main)">⚙️ Definições</h4>
+      <div class="form-grupo" style="text-align: left">
+        <label
+          style="
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+          "
+          >Aparência</label
+        >
+        <button
+          id="toggle-tema"
+          class="btn-acao"
+          style="
+            width: 100%;
+            background: var(--input-bg);
+            color: var(--text-main);
+            border: 2px solid transparent;
+          "
+        >
+          🌙 Modo Escuro Ativo
+        </button>
+      </div>
+      <div class="form-grupo" style="margin-top: 20px; text-align: left">
+        <label
+          style="
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+          "
+          >Acessibilidade</label
+        >
+        <button
+          id="toggle-daltonismo"
+          class="btn-acao"
+          style="
+            width: 100%;
+            background: var(--input-bg);
+            color: var(--text-main);
+            border: 2px solid transparent;
+          "
+        >
+          👁️ Modo Daltônico: Desligado
+        </button>
+      </div>
+      <button
+        id="fechar-settings"
+        class="btn-cancelar"
+        style="margin-top: 20px"
+      >
+        Fechar
+      </button>
+    </div>
+
+    <script>
+      document.getElementById("nome-user").textContent =
+        `Olá, ${usuarioLogado.nome}`;
+      function fazerLogout() {
+        localStorage.removeItem("usuarioLogado");
+        window.location.href = "login.html";
+      }
+    </script>
+  </body>
+</html>

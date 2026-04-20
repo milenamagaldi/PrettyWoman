@@ -1,0 +1,9 @@
+1: vamos fazer esse projeto primeiramente com as seguintes
+estatisticas: passes certos, passes errados,  interceptacoes, finalizacoes e gols.
+a ideia que estou pensando primariamente no sistema eh
+
+ok... creio que devemos focar agora na questao de login e cadastro de novos usuarios... por enquanto nosso 'index.html'. esta focado na alimentacao de dados para o dashboard e relacionados... o plano para o sistema seria basicamente ter a tela de cadastre-se com o google... ter a tela de login... apos feito o login, a tela de home (nao sei exatamente como vai ser), vai ter as opcoes de ir pra pagina de criacao de nova partida...
+
+
+
+quando clicar no botao de 'nova partida' ... vai vir o frame pedindo a data, horario de partida e observacoes 'opcional se quiser escrever algo' ... embaixo vai ter a opcao para colocar os quatro jogadores titulares (umas quatro bolinhas cinzas [com um bonequinho generico de fundo] que ao clicar em uma bolinha dessa, vai subir da parte inferior a lista de JOGADORES CADASTRADOS no nosso sistema, a foto dele com o nome embaixo, ao clicar no jogador , vai aparecer um frame perguntando o numero da camisa e a gente gira ate o numero certo e aperta ok... o jogador titular numero 1 de 4 foi selecionado e vai ficar preenchido com a foto dele, nome e numero ... apos fizermos o mesmo com os quatro jogadores titulares... vai liberar embaixo a opcao para os jogadores reservas (o processo eh o mesmo que foi dos jogadores titulares...) apos os campos de data, horario, adversario e a lista de jogadores titulares e reservas preenchidas... o botao de iniciar registro de partida vai funcionar e vai nos levar para a tela de registro de partida (basicamente a forma final da tela de index.html que

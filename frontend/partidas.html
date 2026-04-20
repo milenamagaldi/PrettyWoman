@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Partidas - PowerScout</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="tema.js"></script>
+    <style>
+      .partida-card {
+        background: var(--bg-secondary);
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 2px solid transparent;
+        transition: 0.2s;
+      }
+      .partida-card:hover {
+        border-color: var(--duo-blue);
+        transform: scale(1.02);
+        filter: brightness(1.2);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="duo-header">
+      <div class="logo"><span class="cor-power">Power</span>Scout</div>
+      <div style="display: flex; gap: 15px; align-items: center">
+        <a
+          href="home.html"
+          style="color: #aaa; text-decoration: none; font-weight: bold"
+          >⬅ Menu Principal</a
+        >
+        <button
+          id="btn-settings"
+          style="
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            outline: none;
+          "
+        >
+          ⚙️
+        </button>
+      </div>
+    </header>
+
+    <div class="duo-container" style="max-width: 600px; margin: 40px auto">
+      <h2>Histórico de <span style="color: var(--duo-blue)">Partidas</span></h2>
+      <div id="lista-partidas" style="margin-top: 20px">
+        <p style="text-align: center; color: #aaa">Carregando partidas...</p>
+      </div>
+    </div>
+
+    <div
+      id="modal-settings"
+      class="escondido duo-modal"
+      style="
+        width: 320px;
+        text-align: center;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 999;
+      "
+    >
+      <h4 style="color: var(--text-main)">⚙️ Definições</h4>
+      <div class="form-grupo" style="text-align: left">
+        <label
+          style="
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+          "
+          >Aparência</label
+        >
+        <button
+          id="toggle-tema"
+          class="btn-acao"
+          style="
+            width: 100%;
+            background: var(--input-bg);
+            color: var(--text-main);
+            border: 2px solid transparent;
+          "
+        >
+          🌙 Modo Escuro Ativo
+        </button>
+      </div>
+      <div class="form-grupo" style="margin-top: 20px; text-align: left">
+        <label
+          style="
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+          "
+          >Acessibilidade</label
+        >
+        <button
+          id="toggle-daltonismo"
+          class="btn-acao"
+          style="
+            width: 100%;
+            background: var(--input-bg);
+            color: var(--text-main);
+            border: 2px solid transparent;
+          "
+        >
+          👁️ Modo Daltônico: Desligado
+        </button>
+      </div>
+      <button
+        id="fechar-settings"
+        class="btn-cancelar"
+        style="margin-top: 20px"
+      >
+        Fechar
+      </button>
+    </div>
+
+    <script>
+      fetch("http://localhost:3000/api/partidas")
+        .then((res) => res.json())
+        .then((partidas) => {
+          const lista = document.getElementById("lista-partidas");
+          lista.innerHTML = "";
+          if (partidas.length === 0)
+            return (lista.innerHTML =
+              '<p style="text-align: center; color: #aaa;">Nenhuma partida registrada ainda.</p>');
+
+          partidas.forEach((p) => {
+            const div = document.createElement("div");
+            div.classList.add("partida-card");
+            const dataFormatada = new Date(p.data_jogo).toLocaleString("pt-BR");
+            div.innerHTML = `<div><strong style="font-size: 18px; color: var(--text-main);">vs ${p.adversario}</strong><br><small style="color: #aaa;">📅 ${dataFormatada}</small></div><span style="font-size: 24px; color: var(--text-main);">▶</span>`;
+            div.onclick = () => {
+              if (!p.escalacao)
+                return alert(
+                  "Esta partida antiga não tem escalação salva. Crie uma nova para visualizar!",
+                );
+              localStorage.setItem(
+                "partidaAtual",
+                JSON.stringify({
+                  id: p.id,
+                  adversario: p.adversario,
+                  escalacao:
+                    typeof p.escalacao === "string"
+                      ? JSON.parse(p.escalacao)
+                      : p.escalacao,
+                }),
+              );
+              localStorage.setItem("modoVisualizacao", "true");
+              window.location.href = "index.html";
+            };
+            lista.appendChild(div);
+          });
+        });
+    </script>
+  </body>
+</html>

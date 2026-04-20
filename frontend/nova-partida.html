@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Nova Partida - PowerScout</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="tema.js"></script>
+  </head>
+  <body>
+    <script>
+      if (!JSON.parse(localStorage.getItem("usuarioLogado")))
+        window.location.href = "login.html";
+    </script>
+
+    <header class="duo-header">
+      <div class="logo"><span class="cor-power">Power</span>Scout</div>
+      <div style="display: flex; gap: 15px; align-items: center">
+        <a
+          href="home.html"
+          style="color: #aaa; text-decoration: none; font-weight: bold"
+          >⬅ Menu Principal</a
+        >
+        <button
+          id="btn-settings"
+          style="
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            outline: none;
+          "
+        >
+          ⚙️
+        </button>
+      </div>
+    </header>
+
+    <div class="duo-container config-container">
+      <h2 style="text-align: center; margin-bottom: 20px">
+        Nova <span class="cor-duo">Partida</span>
+      </h2>
+      <div class="form-grupo">
+        <label style="color: #aaa; font-size: 14px">Data e Hora</label
+        ><input type="datetime-local" id="data-jogo" />
+      </div>
+      <div class="form-grupo">
+        <label style="color: #aaa; font-size: 14px">Adversário</label
+        ><input type="text" id="nome-adversario" placeholder="Ex: Argentina" />
+      </div>
+
+      <h3 style="margin-top: 30px; color: var(--duo-blue)">
+        ⚽ Titulares (Escolha 4)
+      </h3>
+      <div class="slots-grid" id="grid-titulares">
+        <div class="slot" onclick="abrirGaveta('titulares', 0)">
+          <div class="slot-foto">+</div>
+          <div class="slot-nome">Adicionar</div>
+        </div>
+        <div class="slot" onclick="abrirGaveta('titulares', 1)">
+          <div class="slot-foto">+</div>
+          <div class="slot-nome">Adicionar</div>
+        </div>
+        <div class="slot" onclick="abrirGaveta('titulares', 2)">
+          <div class="slot-foto">+</div>
+          <div class="slot-nome">Adicionar</div>
+        </div>
+        <div class="slot" onclick="abrirGaveta('titulares', 3)">
+          <div class="slot-foto">+</div>
+          <div class="slot-nome">Adicionar</div>
+        </div>
+      </div>
+
+      <h3 style="margin-top: 20px; color: #aaa">🔄 Reservas (Obrigatório)</h3>
+      <div class="slots-grid" id="grid-reservas">
+        <div class="slot" onclick="abrirGaveta('reservas', 0)">
+          <div class="slot-foto">+</div>
+          <div class="slot-nome">Adicionar</div>
+        </div>
+        <div class="slot" onclick="abrirGaveta('reservas', 1)">
+          <div class="slot-foto">+</div>
+          <div class="slot-nome">Adicionar</div>
+        </div>
+        <div class="slot" onclick="abrirGaveta('reservas', 2)">
+          <div class="slot-foto">+</div>
+          <div class="slot-nome">Adicionar</div>
+        </div>
+        <div class="slot" onclick="abrirGaveta('reservas', 3)">
+          <div class="slot-foto">+</div>
+          <div class="slot-nome">Adicionar</div>
+        </div>
+      </div>
+
+      <button
+        id="btn-iniciar"
+        class="btn-acao btn-duo-primary"
+        style="width: 100%; margin-top: 20px; font-size: 18px"
+      >
+        Começar Coleta 🎯
+      </button>
+      <div id="mensagem-erro"></div>
+    </div>
+
+    <div class="gaveta-overlay" id="gaveta-overlay"></div>
+    <div class="gaveta" id="gaveta-jogadores">
+      <h3 style="text-align: center; margin-bottom: 20px">
+        Selecione o Jogador
+      </h3>
+      <div id="lista-jogadores-gaveta"></div>
+    </div>
+
+    <div
+      id="modal-camisa"
+      class="escondido duo-modal"
+      style="
+        width: 280px;
+        text-align: center;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 100;
+      "
+    >
+      <h4>👕 Número da Camisa</h4>
+      <p
+        id="nome-jogador-camisa"
+        style="color: #aaa; margin: 10px 0; font-size: 14px"
+      ></p>
+      <input
+        type="number"
+        id="input-camisa"
+        style="
+          width: 100%;
+          padding: 10px;
+          border-radius: 8px;
+          border: none;
+          text-align: center;
+          font-size: 20px;
+          margin-bottom: 15px;
+          font-weight: bold;
+        "
+      />
+      <p
+        id="erro-camisa"
+        style="
+          color: var(--duo-red);
+          font-size: 13px;
+          font-weight: bold;
+          display: none;
+          margin-bottom: 10px;
+        "
+      ></p>
+      <div style="display: flex; gap: 10px; flex-direction: column">
+        <button id="btn-confirmar-camisa" class="btn-acao btn-duo-primary">
+          Confirmar
+        </button>
+        <button id="btn-cancelar-camisa" class="btn-cancelar">Cancelar</button>
+      </div>
+    </div>
+
+    <div
+      id="modal-settings"
+      class="escondido duo-modal"
+      style="
+        width: 320px;
+        text-align: center;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 999;
+      "
+    >
+      <h4 style="color: var(--text-main)">⚙️ Definições</h4>
+      <div class="form-grupo" style="text-align: left">
+        <label
+          style="
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+          "
+          >Aparência</label
+        >
+        <button
+          id="toggle-tema"
+          class="btn-acao"
+          style="
+            width: 100%;
+            background: var(--input-bg);
+            color: var(--text-main);
+            border: 2px solid transparent;
+          "
+        >
+          🌙 Modo Escuro Ativo
+        </button>
+      </div>
+      <div class="form-grupo" style="margin-top: 20px; text-align: left">
+        <label
+          style="
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+          "
+          >Acessibilidade</label
+        >
+        <button
+          id="toggle-daltonismo"
+          class="btn-acao"
+          style="
+            width: 100%;
+            background: var(--input-bg);
+            color: var(--text-main);
+            border: 2px solid transparent;
+          "
+        >
+          👁️ Modo Daltônico: Desligado
+        </button>
+      </div>
+      <button
+        id="fechar-settings"
+        class="btn-cancelar"
+        style="margin-top: 20px"
+      >
+        Fechar
+      </button>
+    </div>
+
+    <script>
+      let atletasBanco = [];
+      let escalacao = {
+        titulares: [null, null, null, null],
+        reservas: [null, null, null, null],
+      };
+      let slotSendoEditado = { tipo: null, index: null };
+      let atletaSelecionado = null;
+      fetch("http://localhost:3000/api/atletas")
+        .then((res) => res.json())
+        .then((dados) => {
+          atletasBanco = dados;
+        });
+
+      function abrirGaveta(tipo, index) {
+        slotSendoEditado = { tipo, index };
+        const lista = document.getElementById("lista-jogadores-gaveta");
+        lista.innerHTML = "";
+        if (escalacao[tipo][index] !== null) {
+          const btnRemover = document.createElement("button");
+          btnRemover.classList.add("btn-acao", "btn-duo-vermelho");
+          btnRemover.style.width = "100%";
+          btnRemover.style.marginBottom = "20px";
+          btnRemover.textContent = "🗑️ Limpar Vaga";
+          btnRemover.onclick = () => limparSlotAtual();
+          lista.appendChild(btnRemover);
+        }
+        atletasBanco.forEach((atleta) => {
+          const jaEscalado =
+            escalacao.titulares.find((j) => j && j.id === atleta.id) ||
+            escalacao.reservas.find((j) => j && j.id === atleta.id);
+          if (jaEscalado) return;
+          const div = document.createElement("div");
+          div.classList.add("jogador-item");
+          let htmlFoto = atleta.foto
+            ? `<div class="foto" style="background-image: url('http://localhost:3000${atleta.foto}'); background-size: cover; background-position: center; color:transparent;"></div>`
+            : `<div class="foto" style="color: white; display:flex; align-items:center; justify-content:center;">${atleta.nome.charAt(0)}</div>`;
+          div.innerHTML = `${htmlFoto} <span style="font-weight: bold; font-size: 16px;">${atleta.nome}</span>`;
+          div.onclick = () => abrirModalCamisa(atleta);
+          lista.appendChild(div);
+        });
+        document.getElementById("gaveta-overlay").style.display = "block";
+        setTimeout(
+          () =>
+            document.getElementById("gaveta-jogadores").classList.add("aberta"),
+          10,
+        );
+      }
+
+      function limparSlotAtual() {
+        escalacao[slotSendoEditado.tipo][slotSendoEditado.index] = null;
+        const grid = document.getElementById(`grid-${slotSendoEditado.tipo}`);
+        const slotVisual = grid.children[slotSendoEditado.index];
+        slotVisual.classList.remove("preenchido");
+        const divFoto = slotVisual.querySelector(".slot-foto");
+        divFoto.style.backgroundImage = "none";
+        divFoto.textContent = "+";
+        slotVisual.querySelector(".slot-nome").textContent = "Adicionar";
+        document.getElementById("gaveta-jogadores").classList.remove("aberta");
+        setTimeout(
+          () =>
+            (document.getElementById("gaveta-overlay").style.display = "none"),
+          300,
+        );
+      }
+
+      function abrirModalCamisa(atleta) {
+        document.getElementById("gaveta-jogadores").classList.remove("aberta");
+        document.getElementById("erro-camisa").style.display = "none";
+        atletaSelecionado = atleta;
+        document.getElementById("nome-jogador-camisa").textContent =
+          `Defina a camisa de ${atleta.nome}:`;
+        document.getElementById("input-camisa").value =
+          atleta.numero_camisa || "";
+        document.getElementById("modal-camisa").classList.remove("escondido");
+      }
+
+      document.getElementById("gaveta-overlay").onclick = () => {
+        document.getElementById("gaveta-jogadores").classList.remove("aberta");
+        document.getElementById("modal-camisa").classList.add("escondido");
+        setTimeout(
+          () =>
+            (document.getElementById("gaveta-overlay").style.display = "none"),
+          300,
+        );
+      };
+      document.getElementById("btn-cancelar-camisa").onclick = () => {
+        document.getElementById("modal-camisa").classList.add("escondido");
+        document.getElementById("gaveta-overlay").style.display = "none";
+      };
+
+      document
+        .getElementById("btn-confirmar-camisa")
+        .addEventListener("click", () => {
+          const numero = document.getElementById("input-camisa").value;
+          const erroCamisa = document.getElementById("erro-camisa");
+          erroCamisa.style.display = "none";
+          if (!numero) return;
+          let camisaEmUso = false;
+          const verificarCamisas = (listaJogadores, tipoLista) => {
+            listaJogadores.forEach((jogadorEscalado, index) => {
+              if (jogadorEscalado && jogadorEscalado.numero_camisa == numero) {
+                if (
+                  !(
+                    slotSendoEditado.tipo === tipoLista &&
+                    slotSendoEditado.index === index
+                  )
+                )
+                  camisaEmUso = true;
+              }
+            });
+          };
+          verificarCamisas(escalacao.titulares, "titulares");
+          verificarCamisas(escalacao.reservas, "reservas");
+          if (camisaEmUso) {
+            erroCamisa.textContent = "Este número já está em uso na equipe!";
+            erroCamisa.style.display = "block";
+            return;
+          }
+          const jogadorPronto = { ...atletaSelecionado, numero_camisa: numero };
+          escalacao[slotSendoEditado.tipo][slotSendoEditado.index] =
+            jogadorPronto;
+          const grid = document.getElementById(`grid-${slotSendoEditado.tipo}`);
+          const slotVisual = grid.children[slotSendoEditado.index];
+          slotVisual.classList.add("preenchido");
+          const divFoto = slotVisual.querySelector(".slot-foto");
+          divFoto.style.backgroundImage = "none";
+          divFoto.textContent = "";
+          if (jogadorPronto.foto) {
+            divFoto.style.backgroundImage = `url('http://localhost:3000${jogadorPronto.foto}')`;
+            divFoto.style.backgroundSize = "cover";
+            divFoto.style.backgroundPosition = "center";
+          } else {
+            divFoto.textContent = jogadorPronto.nome.charAt(0);
+          }
+          slotVisual.querySelector(".slot-nome").textContent =
+            `${jogadorPronto.nome} (${numero})`;
+          document.getElementById("modal-camisa").classList.add("escondido");
+          document.getElementById("gaveta-overlay").style.display = "none";
+        });
+
+      document.getElementById("btn-iniciar").addEventListener("click", () => {
+        const erroDiv = document.getElementById("mensagem-erro");
+        erroDiv.style.display = "none";
+        const dataJogo = document.getElementById("data-jogo").value;
+        const adversario = document.getElementById("nome-adversario").value;
+        if (!dataJogo || !adversario) {
+          erroDiv.textContent =
+            "Preencha a data e o nome do adversário para iniciar.";
+          erroDiv.style.display = "block";
+          return;
+        }
+        if (
+          escalacao.titulares.includes(null) ||
+          escalacao.reservas.includes(null)
+        ) {
+          erroDiv.textContent =
+            "Preencha todos os 8 jogadores (Titulares e Reservas) para iniciar.";
+          erroDiv.style.display = "block";
+          return;
+        }
+        fetch("http://localhost:3000/api/partidas", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            data_jogo: dataJogo,
+            adversario: adversario,
+            escalacao: escalacao,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            localStorage.setItem(
+              "partidaAtual",
+              JSON.stringify({
+                id: data.id_partida,
+                adversario: adversario,
+                escalacao: escalacao,
+              }),
+            );
+            localStorage.setItem("modoVisualizacao", "false");
+            window.location.href = "index.html";
+          });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login - PowerScout</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <script src="tema.js"></script>
+  </head>
+  <body class="login-page">
+    <div id="splash-screen" class="splash-screen">
+      <div class="splash-logo"><span class="cor-power">Power</span>Scout</div>
+
+      <div id="espaco-bonequinho" class="splash-loader"></div>
+    </div>
+
+    <button
+      id="btn-settings"
+      id="btn-settings-login"
+      style="
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 24px;
+      "
+    >
+      ⚙️
+    </button>
+
+    <div class="login-box">
+      <h1><span class="cor-duo">Power</span>Scout</h1>
+      <p>Acesse o painel tático da equipe</p>
+
+      <div style="display: flex; justify-content: center">
+        <div
+          id="g_id_onload"
+          data-client_id="435937929513-qdgtkv50f7hr96l3si189tmrd6p5okr5.apps.googleusercontent.com"
+          data-context="signin"
+          data-ux_mode="popup"
+          data-callback="handleCredentialResponse"
+          data-auto_prompt="false"
+        ></div>
+        <div
+          class="g_id_signin"
+          data-type="standard"
+          data-size="large"
+          data-theme="filled_black"
+          data-text="sign_in_with"
+          data-shape="rectangular"
+          data-logo_alignment="left"
+        ></div>
+      </div>
+
+      <div id="mensagem-erro">E-mail não autorizado!</div>
+      <button class="btn-dev" onclick="loginDesenvolvedor()">
+        Login Rápido (Modo Dev)
+      </button>
+    </div>
+
+    <div
+      id="modal-settings"
+      class="escondido duo-modal"
+      style="
+        width: 320px;
+        text-align: center;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 999;
+      "
+    >
+      <h4 style="color: var(--text-main)">⚙️ Definições</h4>
+      <div class="form-grupo" style="text-align: left">
+        <label
+          style="
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+          "
+          >Aparência</label
+        >
+        <button
+          id="toggle-tema"
+          class="btn-acao"
+          style="
+            width: 100%;
+            background: var(--input-bg);
+            color: var(--text-main);
+            border: 2px solid transparent;
+          "
+        >
+          🌙 Modo Escuro Ativo
+        </button>
+      </div>
+      <div class="form-grupo" style="margin-top: 20px; text-align: left">
+        <label
+          style="
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+          "
+          >Acessibilidade</label
+        >
+        <button
+          id="toggle-daltonismo"
+          class="btn-acao"
+          style="
+            width: 100%;
+            background: var(--input-bg);
+            color: var(--text-main);
+            border: 2px solid transparent;
+          "
+        >
+          👁️ Modo Daltônico: Desligado
+        </button>
+      </div>
+      <button
+        id="fechar-settings"
+        class="btn-cancelar"
+        style="margin-top: 20px"
+      >
+        Fechar
+      </button>
+    </div>
+
+    <script>
+      function decodificarJWT(token) {
+        const base64Url = token.split(".")[1];
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        return JSON.parse(
+          decodeURIComponent(
+            atob(base64)
+              .split("")
+              .map(function (c) {
+                return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+              })
+              .join(""),
+          ),
+        );
+      }
+      function handleCredentialResponse(response) {
+        const dadosGoogle = decodificarJWT(response.credential);
+        enviarParaBackend(dadosGoogle.email, dadosGoogle.name);
+      }
+      function loginDesenvolvedor() {
+        enviarParaBackend("treinador@teste.com");
+      }
+      function enviarParaBackend(emailUsuario, nomeUsuario) {
+        fetch("http://localhost:3000/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: emailUsuario, nome: nomeUsuario }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.sucesso) {
+              localStorage.setItem(
+                "usuarioLogado",
+                JSON.stringify(data.usuario),
+              );
+              window.location.href = "home.html";
+            }
+          });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Painel de Gestão - PowerScout</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="tema.js"></script>
+  </head>
+  <body>
+    <script>
+      if (!JSON.parse(localStorage.getItem("usuarioLogado")))
+        window.location.href = "login.html";
+    </script>
+
+    <header class="duo-header">
+      <div class="logo"><span class="cor-power">Power</span>Scout</div>
+      <div style="display: flex; gap: 15px; align-items: center">
+        <a
+          href="home.html"
+          style="color: #aaa; text-decoration: none; font-weight: bold"
+          >⬅ Menu Principal</a
+        >
+        <button
+          id="btn-settings"
+          style="
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            outline: none;
+          "
+        >
+          ⚙️
+        </button>
+      </div>
+    </header>
+
+    <div id="escudo-bloqueio" class="bloqueio-tela"></div>
+
+    <div class="elenco-layout">
+      <div>
+        <h2>Nosso <span class="cor-duo">Elenco</span></h2>
+        <div class="grid-jogadores" id="grid-elenco" style="margin-top: 20px">
+          <p style="color: #aaa">Carregando elenco...</p>
+        </div>
+      </div>
+
+      <div class="duo-container" style="height: fit-content">
+        <h3 style="text-align: center">
+          Cadastrar <span class="cor-duo">Atleta</span>
+        </h3>
+        <form id="form-jogador" style="margin-top: 20px">
+          <div class="form-grupo">
+            <label>Nome do Atleta</label
+            ><input
+              type="text"
+              id="nome-atleta"
+              placeholder="Ex: Lucas"
+              required
+            />
+          </div>
+          <div class="form-grupo">
+            <label>Número da Camisa</label
+            ><input
+              type="number"
+              id="numero-atleta"
+              placeholder="Ex: 10"
+              required
+            />
+          </div>
+          <div class="form-grupo">
+            <label>Foto do Perfil (Opcional)</label
+            ><input
+              type="file"
+              id="foto-atleta"
+              accept="image/png, image/jpeg"
+            />
+          </div>
+          <button
+            type="submit"
+            class="btn-acao btn-duo-primary"
+            style="width: 100%; margin-top: 10px"
+          >
+            Salvar Atleta
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div
+      id="modal-perfil-jogador"
+      class="escondido duo-modal modal-perfil"
+      style="
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 100;
+      "
+    >
+      <div class="perfil-header">
+        <div
+          id="perfil-foto"
+          class="foto-grande"
+          style="width: 100px; height: 100px; font-size: 40px"
+        ></div>
+        <div>
+          <h2 id="perfil-nome" style="margin-bottom: 5px">Nome do Jogador</h2>
+          <span
+            id="perfil-camisa"
+            style="
+              background: var(--duo-green-primary);
+              color: white;
+              padding: 5px 15px;
+              border-radius: 20px;
+              font-weight: bold;
+            "
+            >Camisa 00</span
+          >
+        </div>
+      </div>
+
+      <h3>📊 Raio-X de Desempenho</h3>
+      <div class="perfil-kpis">
+        <div class="kpi-mini">
+          <h5>Gols</h5>
+          <div class="val" id="p-gols" style="color: var(--duo-yellow)">0</div>
+        </div>
+        <div class="kpi-mini">
+          <h5>Passes Certos</h5>
+          <div class="val" id="p-passes-c" style="color: var(--duo-blue)">
+            0
+          </div>
+        </div>
+        <div class="kpi-mini">
+          <h5>Passes Errados</h5>
+          <div class="val" id="p-passes-e" style="color: var(--duo-red)">0</div>
+        </div>
+        <div class="kpi-mini">
+          <h5>Interceptações</h5>
+          <div class="val" id="p-intercep" style="color: var(--duo-orange)">
+            0
+          </div>
+        </div>
+      </div>
+
+      <h3>🔥 Mapa de Calor Pessoal</h3>
+      <div class="heatmap-container-mini" id="perfil-heatmap">
+        <svg
+          viewBox="0 0 800 500"
+          width="100%"
+          height="100%"
+          style="position: absolute; z-index: 1"
+        >
+          <rect
+            x="20"
+            y="20"
+            width="760"
+            height="460"
+            fill="none"
+            stroke="rgba(255,255,255,0.5)"
+            stroke-width="4"
+            rx="15"
+          />
+          <line
+            x1="400"
+            y1="20"
+            x2="400"
+            y2="480"
+            stroke="rgba(255,255,255,0.5)"
+            stroke-width="4"
+          />
+          <circle
+            cx="400"
+            cy="250"
+            r="70"
+            fill="none"
+            stroke="rgba(255,255,255,0.5)"
+            stroke-width="4"
+          />
+          <circle cx="400" cy="250" r="6" fill="rgba(255,255,255,0.5)" />
+          <rect
+            x="20"
+            y="125"
+            width="120"
+            height="250"
+            fill="none"
+            stroke="rgba(255,255,255,0.5)"
+            stroke-width="4"
+            rx="10"
+          />
+          <rect
+            x="660"
+            y="125"
+            width="120"
+            height="250"
+            fill="none"
+            stroke="rgba(255,255,255,0.5)"
+            stroke-width="4"
+            rx="10"
+          />
+        </svg>
+      </div>
+
+      <div style="display: flex; gap: 15px; margin-top: 25px">
+        <button
+          id="btn-deletar-jogador"
+          class="btn-acao btn-duo-vermelho"
+          style="flex: 1"
+        >
+          🗑️ Dispensar Jogador
+        </button>
+        <button
+          id="fechar-perfil"
+          class="btn-cancelar"
+          style="flex: 1; margin: 0"
+        >
+          Fechar Perfil
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="modal-confirm-custom"
+      class="escondido duo-modal"
+      style="
+        width: 320px;
+        text-align: center;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 200;
+      "
+    >
+      <h4 id="titulo-confirm-custom" style="color: var(--duo-orange)">
+        Atenção
+      </h4>
+      <p
+        id="texto-confirm-custom"
+        style="margin: 15px 0; font-size: 15px; color: var(--text-main)"
+      ></p>
+      <div style="display: flex; gap: 10px; flex-direction: column">
+        <button id="btn-sim-confirm" class="btn-acao btn-duo-orange">
+          Sim
+        </button>
+        <button id="btn-nao-confirm" class="btn-cancelar">Cancelar</button>
+      </div>
+    </div>
+
+    <div
+      id="modal-settings"
+      class="escondido duo-modal"
+      style="
+        width: 320px;
+        text-align: center;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 999;
+      "
+    >
+      <h4 style="color: var(--text-main)">⚙️ Definições</h4>
+      <div class="form-grupo" style="text-align: left">
+        <label
+          style="
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+          "
+          >Aparência</label
+        ><button
+          id="toggle-tema"
+          class="btn-acao"
+          style="
+            width: 100%;
+            background: var(--input-bg);
+            color: var(--text-main);
+            border: 2px solid transparent;
+          "
+        >
+          🌙 Modo Escuro Ativo
+        </button>
+      </div>
+      <div class="form-grupo" style="margin-top: 20px; text-align: left">
+        <label
+          style="
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+          "
+          >Acessibilidade</label
+        ><button
+          id="toggle-daltonismo"
+          class="btn-acao"
+          style="
+            width: 100%;
+            background: var(--input-bg);
+            color: var(--text-main);
+            border: 2px solid transparent;
+          "
+        >
+          👁️ Modo Daltônico: Desligado
+        </button>
+      </div>
+      <button
+        id="fechar-settings"
+        class="btn-cancelar"
+        style="margin-top: 20px"
+      >
+        Fechar
+      </button>
+    </div>
+
+    <script>
+      let atletaAbertoId = null;
+
+      // 1. CARREGAR ELENCO
+      function carregarElenco() {
+        fetch("http://localhost:3000/api/atletas")
+          .then((res) => res.json())
+          .then((atletas) => {
+            const grid = document.getElementById("grid-elenco");
+            grid.innerHTML = "";
+            if (atletas.length === 0)
+              return (grid.innerHTML =
+                '<p style="color: #aaa;">Nenhum jogador cadastrado ainda.</p>');
+
+            atletas.forEach((a) => {
+              const card = document.createElement("div");
+              card.classList.add("card-atleta");
+              let htmlFoto = a.foto
+                ? `<div class="foto-grande" style="background-image: url('http://localhost:3000${a.foto}'); background-size: cover; background-position: center; color:transparent;"></div>`
+                : `<div class="foto-grande">${a.nome.charAt(0)}</div>`;
+              card.innerHTML = `${htmlFoto} <h4 style="margin:0; color: var(--text-main);">${a.nome}</h4> <small style="color: #aaa;">Camisa ${a.numero_camisa}</small>`;
+              card.onclick = () => abrirRaioX(a.id);
+              grid.appendChild(card);
+            });
+          });
+      }
+      carregarElenco();
+
+      // 2. CADASTRAR JOGADOR
+      document
+        .getElementById("form-jogador")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const btnSalvar = document.querySelector('button[type="submit"]');
+          btnSalvar.textContent = "Salvando...";
+          btnSalvar.disabled = true;
+
+          const formData = new FormData();
+          formData.append("nome", document.getElementById("nome-atleta").value);
+          formData.append(
+            "numero_camisa",
+            document.getElementById("numero-atleta").value,
+          );
+          const fotoInput = document.getElementById("foto-atleta");
+          if (fotoInput.files.length > 0)
+            formData.append("foto", fotoInput.files[0]);
+
+          fetch("http://localhost:3000/api/atletas", {
+            method: "POST",
+            body: formData,
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              document.getElementById("form-jogador").reset();
+              btnSalvar.textContent = "Salvar Atleta";
+              btnSalvar.disabled = false;
+              carregarElenco(); // Atualiza a grade na hora!
+            });
+        });
+
+      // 3. ABRIR RAIO-X DO JOGADOR
+      function abrirRaioX(id) {
+        atletaAbertoId = id;
+        const escudo = document.getElementById("escudo-bloqueio");
+        const modal = document.getElementById("modal-perfil-jogador");
+
+        // Busca as Estatísticas (KPIs e Info)
+        fetch(`http://localhost:3000/api/estatisticas/atleta/${id}`)
+          .then((res) => res.json())
+          .then((stats) => {
+            document.getElementById("perfil-nome").textContent =
+              stats.nome || "Desconhecido";
+            document.getElementById("perfil-camisa").textContent =
+              `Camisa ${stats.numero_camisa || "?"}`;
+
+            const divFoto = document.getElementById("perfil-foto");
+            if (stats.foto) {
+              divFoto.style.backgroundImage = `url('http://localhost:3000${stats.foto}')`;
+              divFoto.style.backgroundSize = "cover";
+              divFoto.style.backgroundPosition = "center";
+              divFoto.style.color = "transparent";
+            } else {
+              divFoto.style.backgroundImage = "none";
+              divFoto.style.color = "white";
+              divFoto.textContent = stats.nome ? stats.nome.charAt(0) : "?";
+            }
+
+            document.getElementById("p-gols").textContent = stats.gols || 0;
+            document.getElementById("p-passes-c").textContent =
+              stats.passes_certos || 0;
+            document.getElementById("p-passes-e").textContent =
+              stats.passes_errados || 0;
+            document.getElementById("p-intercep").textContent =
+              stats.interceptacoes || 0;
+          });
+
+        // Busca os Lances para o Mapa de Calor
+        fetch(`http://localhost:3000/api/eventos/atleta/${id}`)
+          .then((res) => res.json())
+          .then((lances) => {
+            const campoHeatmap = document.getElementById("perfil-heatmap");
+            campoHeatmap
+              .querySelectorAll(".mancha-calor")
+              .forEach((m) => m.remove()); // Limpa antigo
+
+            lances.forEach((lance) => {
+              const mancha = document.createElement("div");
+              mancha.classList.add("mancha-calor");
+              mancha.style.left = `${lance.coord_x}%`;
+              mancha.style.top = `${lance.coord_y}%`;
+              campoHeatmap.appendChild(mancha);
+            });
+          });
+
+        escudo.classList.add("ativo");
+        modal.classList.remove("escondido");
+      }
+
+      document.getElementById("fechar-perfil").onclick = () => {
+        document.getElementById("escudo-bloqueio").classList.remove("ativo");
+        document
+          .getElementById("modal-perfil-jogador")
+          .classList.add("escondido");
+      };
+
+      // 4. DISPENSAR JOGADOR E MODAL DE CONFIRMAÇÃO
+      function mostrarConfirmCustom(
+        titulo,
+        mensagem,
+        corBotao,
+        textoBotao,
+        callbackSim,
+      ) {
+        document.getElementById("titulo-confirm-custom").textContent = titulo;
+        document.getElementById("texto-confirm-custom").textContent = mensagem;
+        const btnSim = document.getElementById("btn-sim-confirm");
+        btnSim.className = `btn-acao ${corBotao}`;
+        btnSim.textContent = textoBotao;
+
+        const novoBtnSim = btnSim.cloneNode(true);
+        btnSim.parentNode.replaceChild(novoBtnSim, btnSim);
+        novoBtnSim.addEventListener("click", () => {
+          document
+            .getElementById("modal-confirm-custom")
+            .classList.add("escondido");
+          callbackSim();
+        });
+
+        // O escudo já está ativo pelo perfil, não mexemos nele
+        document
+          .getElementById("modal-confirm-custom")
+          .classList.remove("escondido");
+        document.getElementById("modal-perfil-jogador").style.opacity = "0.3"; // Dá um blur no perfil atrás
+      }
+
+      document
+        .getElementById("btn-nao-confirm")
+        .addEventListener("click", () => {
+          document
+            .getElementById("modal-confirm-custom")
+            .classList.add("escondido");
+          document.getElementById("modal-perfil-jogador").style.opacity = "1";
+        });
+
+      document.getElementById("btn-deletar-jogador").onclick = () => {
+        mostrarConfirmCustom(
+          "Dispensar Jogador",
+          "Tem certeza que deseja excluir este atleta? TODOS os lances registrados no nome dele sumirão da linha do tempo das partidas. Essa ação é irreversível.",
+          "btn-duo-vermelho",
+          "Sim, Dispensar",
+          () => {
+            fetch(`http://localhost:3000/api/atletas/${atletaAbertoId}`, {
+              method: "DELETE",
+            }).then(() => {
+              document
+                .getElementById("modal-perfil-jogador")
+                .classList.add("escondido");
+              document.getElementById("modal-perfil-jogador").style.opacity =
+                "1";
+              document
+                .getElementById("escudo-bloqueio")
+                .classList.remove("ativo");
+              carregarElenco();
+            });
+          },
+        );
+      };
+    </script>
+  </body>
+</html>
