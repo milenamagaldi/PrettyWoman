@@ -16,7 +16,7 @@ let modoVisualizacao = localStorage.getItem('modoVisualizacao') === 'true';
 let dadosAlterados = false; // Rastreador de alterações não salvas
 
 const headerNome = document.getElementById('nome-treinador');
-if (headerNome && partidaInfo.adversario) headerNome.innerHTML = `<span style="color:var(--duo-blue);">vs ${partidaInfo.adversario}</span>`;
+if (headerNome && partidaInfo.adversario) headerNome.innerHTML = `<span style="color:#4da3ff;">vs ${partidaInfo.adversario}</span>`;
 
 let atletaIdSelecionado = 0; let jogadorSelecionado = "Desconhecido";
 if (partidaInfo.escalacao && partidaInfo.escalacao.titulares && partidaInfo.escalacao.titulares[0]) {
@@ -27,7 +27,7 @@ if (partidaInfo.escalacao && partidaInfo.escalacao.titulares && partidaInfo.esca
 // Variáveis Globais
 const campo = document.getElementById('campo'); const svgQuadra = document.getElementById('quadra-svg');
 const modalAcao = document.getElementById('modal-acao'); const tituloModal = document.getElementById('modal-titulo');
-const btnFecharModal = document.getElementById('fechar-modal'); const botoesAcao = document.querySelectorAll('#modal-acao .btn-acao'); 
+const btnFecharModal = document.getElementById('fechar-modal'); const botoesAcao = document.querySelectorAll('#modal-acao .btn-acao');
 const inputTempo = document.getElementById('tempo-video'); const displayTempo = document.getElementById('tempo-display');
 const listaHistorico = document.getElementById('lista-historico'); const modalEdicao = document.getElementById('modal-edicao');
 const selectEditarAcao = document.getElementById('editar-tipo-acao'); const inputEditarMinuto = document.getElementById('editar-minuto');
@@ -59,10 +59,10 @@ function mostrarConfirmCustom(titulo, mensagem, corBotao, textoBotao, callbackSi
     const btnSim = document.getElementById('btn-sim-confirm');
     btnSim.className = `btn-acao ${corBotao}`;
     btnSim.textContent = textoBotao;
-    
+
     const novoBtnSim = btnSim.cloneNode(true);
     btnSim.parentNode.replaceChild(novoBtnSim, btnSim);
-    
+
     novoBtnSim.addEventListener('click', () => {
         document.getElementById('modal-confirm-custom').classList.add('escondido');
         escudoBloqueio.classList.remove('ativo');
@@ -133,23 +133,23 @@ inputTempo.addEventListener('input', (e) => {
 inputTempo.addEventListener('change', (e) => {
     const sSelecionados = parseInt(e.target.value);
     reorganizarTitularesEReservas(sSelecionados);
-    
+
     if (!estaEmQuadra(atletaIdSelecionado, sSelecionados)) {
         const subDele = lancesDaPartida.find(l => l.tipo_acao === 'Substituição' && l.jogador_entrou_id == atletaIdSelecionado);
         let idParaTrocar = null;
 
-        if (subDele && sSelecionados < ((parseInt(subDele.minuto_video.split(':')[0])*60)+parseInt(subDele.minuto_video.split(':')[1]))) {
-            idParaTrocar = subDele.atleta_id; 
+        if (subDele && sSelecionados < ((parseInt(subDele.minuto_video.split(':')[0]) * 60) + parseInt(subDele.minuto_video.split(':')[1]))) {
+            idParaTrocar = subDele.atleta_id;
         } else {
             const eleSaindo = lancesDaPartida.find(l => l.tipo_acao === 'Substituição' && l.atleta_id == atletaIdSelecionado);
-            if(eleSaindo && sSelecionados >= ((parseInt(eleSaindo.minuto_video.split(':')[0])*60)+parseInt(eleSaindo.minuto_video.split(':')[1]))) {
+            if (eleSaindo && sSelecionados >= ((parseInt(eleSaindo.minuto_video.split(':')[0]) * 60) + parseInt(eleSaindo.minuto_video.split(':')[1]))) {
                 idParaTrocar = eleSaindo.jogador_entrou_id;
             }
         }
 
         if (idParaTrocar) {
             document.querySelectorAll('.jogador').forEach(j => {
-                if(parseInt(j.getAttribute('data-id')) == idParaTrocar) {
+                if (parseInt(j.getAttribute('data-id')) == idParaTrocar) {
                     document.querySelectorAll('.jogador').forEach(x => x.classList.remove('ativo'));
                     j.classList.add('ativo');
                     jogadorSelecionado = j.querySelector('span').textContent;
@@ -163,7 +163,7 @@ inputTempo.addEventListener('change', (e) => {
 });
 
 function atualizarBarraDeTempo(tempoTexto) {
-    const p = tempoTexto.split(':'); if(p.length !== 2) return;
+    const p = tempoTexto.split(':'); if (p.length !== 2) return;
     inputTempo.value = (parseInt(p[0]) * 60) + parseInt(p[1]);
     tempoAtualFormatado = tempoTexto; displayTempo.textContent = tempoAtualFormatado;
 }
@@ -178,27 +178,27 @@ document.addEventListener('click', (e) => {
     const titularAtivo = document.querySelector('.titulares .jogador.ativo');
 
     if (isReserva && titularAtivo) {
-        if(modoVisualizacao) return mostrarAlertaCustom("Modo Leitura", "A tela está travada. Clique em 'Alterar Partida' para fazer substituições.");
-        
+        if (modoVisualizacao) return mostrarAlertaCustom("Modo Leitura", "A tela está travada. Clique em 'Alterar Partida' para fazer substituições.");
+
         idSaindo = parseInt(titularAtivo.getAttribute('data-id')); idEntrando = parseInt(boxJogador.getAttribute('data-id'));
         textoSubstituicao.innerHTML = `<strong>${titularAtivo.querySelector('span').textContent}</strong> será substituído por <strong>${boxJogador.querySelector('span').textContent}</strong> aos <span class="cor-duo">${tempoAtualFormatado}</span>?`;
         modalSubstituicao.style.position = 'fixed'; modalSubstituicao.style.left = '50%'; modalSubstituicao.style.top = '50%'; modalSubstituicao.style.transform = 'translate(-50%, -50%)';
         escudoBloqueio.classList.add('ativo'); modalSubstituicao.classList.remove('escondido');
-    } 
+    }
     else if (!isReserva) {
         document.querySelectorAll('.jogador').forEach(j => j.classList.remove('ativo'));
         boxJogador.classList.add('ativo');
         jogadorSelecionado = boxJogador.querySelector('span').textContent; atletaIdSelecionado = parseInt(boxJogador.getAttribute('data-id'));
         const lDoJogador = lancesDaPartida.filter(l => l.atleta_id === atletaIdSelecionado);
         if (lDoJogador.length > 0) {
-            const sorted = [...lDoJogador].sort((a, b) => { return ((parseInt(a.minuto_video.split(':')[0])*60)+parseInt(a.minuto_video.split(':')[1])) - ((parseInt(b.minuto_video.split(':')[0])*60)+parseInt(b.minuto_video.split(':')[1])); });
+            const sorted = [...lDoJogador].sort((a, b) => { return ((parseInt(a.minuto_video.split(':')[0]) * 60) + parseInt(a.minuto_video.split(':')[1])) - ((parseInt(b.minuto_video.split(':')[0]) * 60) + parseInt(b.minuto_video.split(':')[1])); });
             atualizarBarraDeTempo(sorted[sorted.length - 1].minuto_video);
         } else {
             const intervalos = calcularIntervalosDoJogador(atletaIdSelecionado);
-            if(intervalos.length > 0) { atualizarBarraDeTempo(`${Math.floor(intervalos[0].inicio/60).toString().padStart(2,'0')}:${(intervalos[0].inicio%60).toString().padStart(2,'0')}`); } 
+            if (intervalos.length > 0) { atualizarBarraDeTempo(`${Math.floor(intervalos[0].inicio / 60).toString().padStart(2, '0')}:${(intervalos[0].inicio % 60).toString().padStart(2, '0')}`); }
             else { atualizarBarraDeTempo("00:00"); }
         }
-        reorganizarTitularesEReservas(parseInt(inputTempo.value)); renderizarMapaELista(); 
+        reorganizarTitularesEReservas(parseInt(inputTempo.value)); renderizarMapaELista();
     }
 });
 
@@ -206,7 +206,7 @@ document.getElementById('btn-cancelar-sub').addEventListener('click', () => { mo
 
 // A INTELIGÊNCIA CONTRA O PARADOXO TEMPORAL
 document.getElementById('btn-confirmar-sub').addEventListener('click', () => {
-    
+
     // Verifica se o jogador saindo tem ações no futuro em relação ao momento da substituição
     const segSub = (parseInt(tempoAtualFormatado.split(':')[0]) * 60) + parseInt(tempoAtualFormatado.split(':')[1]);
     const acoesFuturas = lancesDaPartida.filter(l => l.atleta_id == idSaindo && l.tipo_acao !== 'Substituição' && ((parseInt(l.minuto_video.split(':')[0]) * 60) + parseInt(l.minuto_video.split(':')[1])) > segSub);
@@ -214,24 +214,24 @@ document.getElementById('btn-confirmar-sub').addEventListener('click', () => {
     const efetivarSubstituicao = () => {
         // Se houver ações no futuro, apaga elas em cascata primeiro
         const promisesDelecao = acoesFuturas.map(l => fetch(`http://localhost:3000/api/eventos/${l.id}`, { method: 'DELETE' }));
-        
+
         Promise.all(promisesDelecao).then(() => {
             const dadosParaBanco = { partida_id: partidaInfo.id, atleta_id: idSaindo, usuario_id: idDoTreinador, jogador_entrou_id: idEntrando, minuto_video: tempoAtualFormatado, tipo_acao: 'Substituição', coord_x: null, coord_y: null };
             fetch('http://localhost:3000/api/eventos', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dadosParaBanco) })
-            .then(() => {
-                dadosAlterados = true; 
-                atletaIdSelecionado = idEntrando; modalSubstituicao.classList.add('escondido'); escudoBloqueio.classList.remove('ativo'); carregarDadosDoBanco(); 
-            });
+                .then(() => {
+                    dadosAlterados = true;
+                    atletaIdSelecionado = idEntrando; modalSubstituicao.classList.add('escondido'); escudoBloqueio.classList.remove('ativo'); carregarDadosDoBanco();
+                });
         });
     };
 
     if (acoesFuturas.length > 0) {
         modalSubstituicao.classList.add('escondido'); // Esconde o modal de sub pra mostrar o de confirmação
         mostrarConfirmCustom(
-            "Alerta de Linha do Tempo", 
-            `O jogador atual possui ${acoesFuturas.length} ações registradas DEPOIS desse minuto. Substituí-lo agora apagará essas ações do futuro. Deseja continuar?`, 
-            "btn-duo-vermelho", 
-            "Sim, Substituir e Apagar", 
+            "Alerta de Linha do Tempo",
+            `O jogador atual possui ${acoesFuturas.length} ações registradas DEPOIS desse minuto. Substituí-lo agora apagará essas ações do futuro. Deseja continuar?`,
+            "btn-duo-vermelho",
+            "Sim, Substituir e Apagar",
             efetivarSubstituicao
         );
     } else {
@@ -243,9 +243,9 @@ document.getElementById('btn-confirmar-sub').addEventListener('click', () => {
 // 6. CLIQUE NO MAPA E REGISTRO DE AÇÕES
 // ==========================================
 svgQuadra.addEventListener('click', (e) => {
-    if(modoVisualizacao) return mostrarAlertaCustom("Modo Leitura", "A tela está travada. Clique em 'Alterar Partida' para adicionar lances.");
+    if (modoVisualizacao) return mostrarAlertaCustom("Modo Leitura", "A tela está travada. Clique em 'Alterar Partida' para adicionar lances.");
     const rect = svgQuadra.getBoundingClientRect(); cliqueX = ((e.clientX - rect.left) / rect.width) * 100; cliqueY = ((e.clientY - rect.top) / rect.height) * 100;
-    if(cliqueX < 0 || cliqueX > 100 || cliqueY < 0 || cliqueY > 100) return;
+    if (cliqueX < 0 || cliqueX > 100 || cliqueY < 0 || cliqueY > 100) return;
 
     if (!estaEmQuadra(atletaIdSelecionado, parseInt(inputTempo.value))) return mostrarAlertaCustom("Erro", `Impossível registrar lance. O ${jogadorSelecionado} está no banco neste momento.`);
 
@@ -261,11 +261,11 @@ document.getElementById('fechar-modal').addEventListener('click', () => { modalA
 
 botoesAcao.forEach(botao => {
     botao.addEventListener('click', (e) => {
-        const tAcao = e.target.getAttribute('data-tipo'); if(!tAcao) return; 
+        const tAcao = e.target.getAttribute('data-tipo'); if (!tAcao) return;
         fetch('http://localhost:3000/api/eventos', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ partida_id: partidaInfo.id, atleta_id: atletaIdSelecionado, usuario_id: idDoTreinador, minuto_video: tempoAtualFormatado, tipo_acao: tAcao, coord_x: cliqueX.toFixed(2), coord_y: cliqueY.toFixed(2) }) })
-        .then(() => {
-            dadosAlterados = true; carregarDadosDoBanco(); modalAcao.classList.add('escondido'); escudoBloqueio.classList.remove('ativo'); 
-        });
+            .then(() => {
+                dadosAlterados = true; carregarDadosDoBanco(); modalAcao.classList.add('escondido'); escudoBloqueio.classList.remove('ativo');
+            });
     });
 });
 
@@ -273,13 +273,13 @@ botoesAcao.forEach(botao => {
 // 7. MOTOR DE TEMPO
 // ==========================================
 function calcularIntervalosDoJogador(idPesquisado) {
-    let intervalos = []; const fInit = partidaInfo.escalacao.titulares.some(j => j && j.id == idPesquisado); let tEntrada = fInit ? 0 : null; 
-    lancesDaPartida.filter(l => l.tipo_acao === 'Substituição').sort((a, b) => (((parseInt(a.minuto_video.split(':')[0])*60)+parseInt(a.minuto_video.split(':')[1])) - ((parseInt(b.minuto_video.split(':')[0])*60)+parseInt(b.minuto_video.split(':')[1])))).forEach(sub => {
+    let intervalos = []; const fInit = partidaInfo.escalacao.titulares.some(j => j && j.id == idPesquisado); let tEntrada = fInit ? 0 : null;
+    lancesDaPartida.filter(l => l.tipo_acao === 'Substituição').sort((a, b) => (((parseInt(a.minuto_video.split(':')[0]) * 60) + parseInt(a.minuto_video.split(':')[1])) - ((parseInt(b.minuto_video.split(':')[0]) * 60) + parseInt(b.minuto_video.split(':')[1])))).forEach(sub => {
         const tSub = (parseInt(sub.minuto_video.split(':')[0]) * 60) + parseInt(sub.minuto_video.split(':')[1]);
         if (sub.atleta_id == idPesquisado && tEntrada !== null) { intervalos.push({ inicio: tEntrada, fim: tSub }); tEntrada = null; }
         else if (sub.jogador_entrou_id == idPesquisado) { tEntrada = tSub; }
     });
-    if (tEntrada !== null) intervalos.push({ inicio: tEntrada, fim: 2400 }); return intervalos; 
+    if (tEntrada !== null) intervalos.push({ inicio: tEntrada, fim: 2400 }); return intervalos;
 }
 function estaEmQuadra(idPesquisado, sAtual) { return calcularIntervalosDoJogador(idPesquisado).some(int => { if (int.fim >= 2400 && sAtual >= 2400) return sAtual >= int.inicio && sAtual <= int.fim; return sAtual >= int.inicio && sAtual < int.fim; }); }
 
@@ -295,14 +295,14 @@ function estaEmQuadra(idPesquisado, sAtual) { return calcularIntervalosDoJogador
 function atualizarCoresDaBarra() {
     const maxS = 2400; let grad = []; let ultF = 0;
     // Usamos a variável que já muda de cor entre os temas
-    const corTrilha = 'var(--border-ui)'; 
+    const corTrilha = 'var(--border-ui)';
 
     calcularIntervalosDoJogador(atletaIdSelecionado).forEach(int => {
-        if (int.inicio > ultF) grad.push(`var(--duo-red) ${(ultF/maxS)*100}% ${(int.inicio/maxS)*100}%`);
-        grad.push(`${corTrilha} ${(int.inicio/maxS)*100}% ${(int.fim/maxS)*100}%`); 
+        if (int.inicio > ultF) grad.push(`var(--duo-red) ${(ultF / maxS) * 100}% ${(int.inicio / maxS) * 100}%`);
+        grad.push(`${corTrilha} ${(int.inicio / maxS) * 100}% ${(int.fim / maxS) * 100}%`);
         ultF = int.fim;
     });
-    if (ultF < maxS) grad.push(`var(--duo-red) ${(ultF/maxS)*100}% 100%`); 
+    if (ultF < maxS) grad.push(`var(--duo-red) ${(ultF / maxS) * 100}% 100%`);
     inputTempo.style.background = `linear-gradient(to right, ${grad.join(', ')})`;
 }
 
@@ -311,8 +311,10 @@ function reorganizarTitularesEReservas(sAtual) {
         const id = parseInt(div.getAttribute('data-id')); const isTitular = estaEmQuadra(id, sAtual); let fDiv = div.querySelector('.foto');
         if (isTitular) {
             containerTitulares.appendChild(div);
-            if (!fDiv) { fDiv = document.createElement('div'); fDiv.classList.add('foto'); const fReal = div.getAttribute('data-foto');
-                if (fReal && fReal !== 'null' && fReal !== '') { fDiv.style.backgroundImage = `url('http://localhost:3000${fReal}')`; fDiv.style.backgroundSize = 'cover'; fDiv.style.backgroundPosition = 'center'; fDiv.style.color = 'transparent'; } else { fDiv.textContent = div.querySelector('span').textContent.charAt(0); } div.prepend(fDiv); }
+            if (!fDiv) {
+                fDiv = document.createElement('div'); fDiv.classList.add('foto'); const fReal = div.getAttribute('data-foto');
+                if (fReal && fReal !== 'null' && fReal !== '') { fDiv.style.backgroundImage = `url('http://localhost:3000${fReal}')`; fDiv.style.backgroundSize = 'cover'; fDiv.style.backgroundPosition = 'center'; fDiv.style.color = 'transparent'; } else { fDiv.textContent = div.querySelector('span').textContent.charAt(0); } div.prepend(fDiv);
+            }
         } else { containerReservas.appendChild(div); if (fDiv) fDiv.remove(); }
     });
 }
@@ -321,10 +323,10 @@ function reorganizarTitularesEReservas(sAtual) {
 // 8. RENDERIZAÇÃO
 // ==========================================
 function carregarDadosDoBanco() {
-    fetch(`http://localhost:3000/api/eventos/partida/${partidaInfo.id}`).then(res => res.json()).then(lances => { 
+    fetch(`http://localhost:3000/api/eventos/partida/${partidaInfo.id}`).then(res => res.json()).then(lances => {
         lancesDaPartida = lances; renderizarMapaELista();
         if (primeiraCarga && modoVisualizacao && lances.length > 0) {
-            const uLance = [...lances].sort((a,b) => (((parseInt(a.minuto_video.split(':')[0])*60)+parseInt(a.minuto_video.split(':')[1])) - ((parseInt(b.minuto_video.split(':')[0])*60)+parseInt(b.minuto_video.split(':')[1]))))[lances.length - 1];
+            const uLance = [...lances].sort((a, b) => (((parseInt(a.minuto_video.split(':')[0]) * 60) + parseInt(a.minuto_video.split(':')[1])) - ((parseInt(b.minuto_video.split(':')[0]) * 60) + parseInt(b.minuto_video.split(':')[1]))))[lances.length - 1];
             atualizarBarraDeTempo(uLance.minuto_video); reorganizarTitularesEReservas(parseInt(inputTempo.value)); primeiraCarga = false;
         }
     });
@@ -332,13 +334,13 @@ function carregarDadosDoBanco() {
 
 function renderizarMapaELista() {
     document.querySelectorAll('.ponto').forEach(p => p.remove()); listaHistorico.innerHTML = ''; reorganizarTitularesEReservas(parseInt(inputTempo.value));
-    const lFilt = lancesDaPartida.filter(l => l.atleta_id === atletaIdSelecionado || l.jogador_entrou_id === atletaIdSelecionado).sort((a, b) => (((parseInt(b.minuto_video.split(':')[0])*60)+parseInt(b.minuto_video.split(':')[1])) - ((parseInt(a.minuto_video.split(':')[0])*60)+parseInt(a.minuto_video.split(':')[1]))));
+    const lFilt = lancesDaPartida.filter(l => l.atleta_id === atletaIdSelecionado || l.jogador_entrou_id === atletaIdSelecionado).sort((a, b) => (((parseInt(b.minuto_video.split(':')[0]) * 60) + parseInt(b.minuto_video.split(':')[1])) - ((parseInt(a.minuto_video.split(':')[0]) * 60) + parseInt(a.minuto_video.split(':')[1]))));
 
     lFilt.forEach(lance => {
-        if(lance.tipo_acao === 'Substituição') {
+        if (lance.tipo_acao === 'Substituição') {
             const item = document.createElement('div'); item.classList.add('item-historico');
-            item.style.backgroundColor = lance.atleta_id === atletaIdSelecionado ? 'red' : 'var(--duo-green-primary)'; item.style.color = 'white';
-            
+            item.style.backgroundColor = lance.atleta_id === atletaIdSelecionado ? '#e67e22'  : '#27ae60'; // entrou → verde diferente
+
             // A BLINDAGEM DO CARTÃO VERDE (Sem botão de excluir)
             if (lance.atleta_id === atletaIdSelecionado) {
                 // Cartão Vermelho (Foi substituído) -> Tem a lixeira!
@@ -349,21 +351,32 @@ function renderizarMapaELista() {
                 item.innerHTML = `<div class="info-historico" style="width:100%; text-align:center;"><strong>🔄 ENTROU NA QUADRA</strong> <br><small>⏱️ ${lance.minuto_video}</small></div>`;
             }
 
-            listaHistorico.appendChild(item); return; 
+            listaHistorico.appendChild(item); return;
         }
 
         const b = document.createElement('div'); b.classList.add('ponto'); b.id = `bolinha-${lance.id}`;
-        if(lance.tipo_acao === 'Passe Certo') b.classList.add('passe-certo'); if(lance.tipo_acao === 'Passe Errado') b.classList.add('passe-errado'); if(lance.tipo_acao === 'Interceptação') b.classList.add('interceptacao'); if(lance.tipo_acao === 'Finalização') b.classList.add('finalizacao'); if(lance.tipo_acao === 'Gol') b.classList.add('gol');
+        if (lance.tipo_acao === 'Passe Certo') b.classList.add('passe-certo'); if (lance.tipo_acao === 'Passe Errado') b.classList.add('passe-errado'); if (lance.tipo_acao === 'Interceptação') b.classList.add('interceptacao'); if (lance.tipo_acao === 'Finalização') b.classList.add('finalizacao'); if (lance.tipo_acao === 'Gol') b.classList.add('gol');
         b.style.left = `${lance.coord_x}%`; b.style.top = `${lance.coord_y}%`; campo.appendChild(b);
 
-        const item = document.createElement('div'); item.classList.add('item-historico'); item.style.cursor = 'pointer'; 
+        const item = document.createElement('div'); item.classList.add('item-historico'); item.style.cursor = 'pointer';
+        // Ela transforma "Passe Certo" em "item-passe-certo", por exemplo.
+        function normalizarTexto(texto) {
+            return texto
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "") // remove acentos
+                .replace(/\s+/g, '-');
+        }
+        
+        const classeAcao = 'item-' + normalizarTexto(lance.tipo_acao);
+        item.classList.add(classeAcao);
         item.innerHTML = `<div class="info-historico"><strong>${lance.nome_atleta}</strong>: ${lance.tipo_acao} <br><small>⏱️ ${lance.minuto_video}</small></div><button class="btn-excluir" onclick="abrirModalEdicao(event, ${lance.id}, '${lance.tipo_acao}', '${lance.minuto_video}')">⚙️</button>`;
         item.addEventListener('click', (e) => {
-            if(e.target.classList.contains('btn-excluir')) return;
+            if (e.target.classList.contains('btn-excluir')) return;
             atualizarBarraDeTempo(lance.minuto_video); reorganizarTitularesEReservas(parseInt(inputTempo.value));
-            const bA = document.getElementById(`bolinha-${lance.id}`); if(bA) { bA.classList.add('ponto-destaque'); setTimeout(() => bA.classList.remove('ponto-destaque'), 1500); }
+            const bA = document.getElementById(`bolinha-${lance.id}`); if (bA) { bA.classList.add('ponto-destaque'); setTimeout(() => bA.classList.remove('ponto-destaque'), 1500); }
         });
-        listaHistorico.appendChild(item); 
+        listaHistorico.appendChild(item);
     });
     atualizarCoresDaBarra();
 }
@@ -371,17 +384,17 @@ function renderizarMapaELista() {
 // ==========================================
 // 9. EDIÇÃO, ELIMINAÇÃO E EFEITO DOMINÓ
 // ==========================================
-function abrirModalEdicao(e, id, acaoAtual, minutoAtual) { 
-    e.stopPropagation(); 
-    if(modoVisualizacao) return mostrarAlertaCustom("Modo Leitura", "Clique em 'Alterar Partida' para editar lances."); 
-    idLanceEmEdicao = id; selectEditarAcao.value = acaoAtual; inputEditarMinuto.value = minutoAtual; modalEdicao.style.position = 'fixed'; modalEdicao.style.left = `50%`; modalEdicao.style.top = `50%`; modalEdicao.style.transform = `translate(-50%, -50%)`; escudoBloqueio.classList.add('ativo'); modalEdicao.classList.remove('escondido'); 
+function abrirModalEdicao(e, id, acaoAtual, minutoAtual) {
+    e.stopPropagation();
+    if (modoVisualizacao) return mostrarAlertaCustom("Modo Leitura", "Clique em 'Alterar Partida' para editar lances.");
+    idLanceEmEdicao = id; selectEditarAcao.value = acaoAtual; inputEditarMinuto.value = minutoAtual; modalEdicao.style.position = 'fixed'; modalEdicao.style.left = `50%`; modalEdicao.style.top = `50%`; modalEdicao.style.transform = `translate(-50%, -50%)`; escudoBloqueio.classList.add('ativo'); modalEdicao.classList.remove('escondido');
 }
 
 document.getElementById('btn-cancelar-edicao').addEventListener('click', () => { modalEdicao.classList.add('escondido'); escudoBloqueio.classList.remove('ativo'); });
 
 document.getElementById('btn-salvar-edicao').addEventListener('click', () => {
     fetch(`http://localhost:3000/api/eventos/${idLanceEmEdicao}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tipo_acao: selectEditarAcao.value, minuto_video: inputEditarMinuto.value }) })
-    .then(() => { dadosAlterados = true; carregarDadosDoBanco(); modalEdicao.classList.add('escondido'); escudoBloqueio.classList.remove('ativo'); });
+        .then(() => { dadosAlterados = true; carregarDadosDoBanco(); modalEdicao.classList.add('escondido'); escudoBloqueio.classList.remove('ativo'); });
 });
 
 document.getElementById('btn-eliminar-definitivo').addEventListener('click', () => {
@@ -393,23 +406,23 @@ document.getElementById('btn-eliminar-definitivo').addEventListener('click', () 
 // A INTELIGÊNCIA EM CASCATA (EFEITO DOMINÓ)
 function deletarSubstituicao(e, lanceId, idQuemEntrou, minutoSubCancelada) {
     e.stopPropagation();
-    if(modoVisualizacao) return mostrarAlertaCustom("Modo Leitura", "Clique em 'Alterar Partida' para desfazer substituições.");
-    
-    const paraSegundos = (t) => (parseInt(t.split(':')[0])*60) + parseInt(t.split(':')[1]);
+    if (modoVisualizacao) return mostrarAlertaCustom("Modo Leitura", "Clique em 'Alterar Partida' para desfazer substituições.");
+
+    const paraSegundos = (t) => (parseInt(t.split(':')[0]) * 60) + parseInt(t.split(':')[1]);
     const segSubCancelada = paraSegundos(minutoSubCancelada);
 
-    let idsParaDeletar = [lanceId]; 
+    let idsParaDeletar = [lanceId];
     let jogadoresAfetados = [idQuemEntrou];
     let i = 0;
 
-    while(i < jogadoresAfetados.length) {
+    while (i < jogadoresAfetados.length) {
         let jogId = jogadoresAfetados[i];
         let acoes = lancesDaPartida.filter(l => l.atleta_id == jogId && paraSegundos(l.minuto_video) >= segSubCancelada && l.id !== lanceId);
-        
+
         acoes.forEach(acao => {
-            if(!idsParaDeletar.includes(acao.id)) idsParaDeletar.push(acao.id);
-            if(acao.tipo_acao === 'Substituição' && acao.jogador_entrou_id) {
-                if(!jogadoresAfetados.includes(acao.jogador_entrou_id)) jogadoresAfetados.push(acao.jogador_entrou_id);
+            if (!idsParaDeletar.includes(acao.id)) idsParaDeletar.push(acao.id);
+            if (acao.tipo_acao === 'Substituição' && acao.jogador_entrou_id) {
+                if (!jogadoresAfetados.includes(acao.jogador_entrou_id)) jogadoresAfetados.push(acao.jogador_entrou_id);
             }
         });
         i++;
@@ -421,10 +434,10 @@ function deletarSubstituicao(e, lanceId, idQuemEntrou, minutoSubCancelada) {
 
     mostrarConfirmCustom("Cancelar Substituição", aviso, "btn-duo-vermelho", "Sim, Apagar Tudo", () => {
         Promise.all(idsParaDeletar.map(id => fetch(`http://localhost:3000/api/eventos/${id}`, { method: 'DELETE' })))
-        .then(() => {
-            dadosAlterados = true;
-            setTimeout(() => carregarDadosDoBanco(), 500); 
-        });
+            .then(() => {
+                dadosAlterados = true;
+                setTimeout(() => carregarDadosDoBanco(), 500);
+            });
     });
 }
 
@@ -435,13 +448,13 @@ function inicializarEscalacao() {
     try {
         containerTitulares.innerHTML = '<h3>⚽ Titulares</h3>'; containerReservas.innerHTML = '';
         const criarBoxJogador = (atleta) => {
-            if(!atleta) return null;
+            if (!atleta) return null;
             const div = document.createElement('div'); div.classList.add('jogador');
-            if (atletaIdSelecionado !== null && atleta.id == atletaIdSelecionado) div.classList.add('ativo'); 
+            if (atletaIdSelecionado !== null && atleta.id == atletaIdSelecionado) div.classList.add('ativo');
             div.setAttribute('data-id', atleta.id); div.setAttribute('data-foto', atleta.foto || ''); div.innerHTML = `<span>${atleta.nome} (${atleta.numero_camisa})</span>`; return div;
         };
-        if (partidaInfo.escalacao && partidaInfo.escalacao.titulares) partidaInfo.escalacao.titulares.forEach(a => { const box = criarBoxJogador(a); if(box) containerTitulares.appendChild(box); });
-        if (partidaInfo.escalacao && partidaInfo.escalacao.reservas) partidaInfo.escalacao.reservas.forEach(a => { const box = criarBoxJogador(a); if(box) containerReservas.appendChild(box); });
+        if (partidaInfo.escalacao && partidaInfo.escalacao.titulares) partidaInfo.escalacao.titulares.forEach(a => { const box = criarBoxJogador(a); if (box) containerTitulares.appendChild(box); });
+        if (partidaInfo.escalacao && partidaInfo.escalacao.reservas) partidaInfo.escalacao.reservas.forEach(a => { const box = criarBoxJogador(a); if (box) containerReservas.appendChild(box); });
         carregarDadosDoBanco();
     } catch (e) { window.location.href = 'home.html'; }
 }

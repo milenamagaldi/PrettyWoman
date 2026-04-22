@@ -9,32 +9,61 @@
   --font-titles: "Fredoka", sans-serif;
 
   /* --- BORDAS E SOMBRAS --- */
-  --radius-duo: 16px; /* Arredondamento dos cards */
-  --shadow-duo: 0px 4px 0px rgba(0, 0, 0, 0.2); /* Sombra estilo botão do Duolingo */
+  --radius-duo: 16px;
+  /* Arredondamento dos cards */
+  --shadow-duo: 0px 4px 0px rgba(0, 0, 0, 0.2);
+  /* Sombra estilo botão do Duolingo */
+
+  /* Identidade Visual do PowerScout */
+  --cor-primaria: #056839;
+  /* Azul-petróleo (O seu verde/tema) */
+  --cor-alerta: #650e14;
+  /* Vermelho escuro */
 
   /* --- MODO ESCURO (Padrão) --- */
-  --bg-primary: #2d2d2d; /* Cor do fundo da tela */
-  --bg-secondary: #3d3d3d; /* Cor dos cards e cabeçalho */
-  --text-main: #eaeaea; /* Cor do texto principal */
-  --border-ui: #444444; /* Cor das linhas separadoras */
-  --input-bg: #4a4a4a; /* Fundo das caixinhas de digitar */
+  --bg-body: #181A1B;
+  /* Cor do fundo da tela */
+  --bg-panel: #242729;
+  /* Fundo dos cartões/modais */
+  --bg-secondary: #2D3033;
+  /* Cor dos cards e cabeçalho */
+  --text-main: #E8EAED;
+  /* Cor do texto principal */
+  --text-secundary: #9AA0A6;
+  --border-ui: #3C4043;
+  /* Cor das linhas separadoras */
+  --input-bg: #181A1B;
+  /* Fundo das caixinhas de digitar */
 
   /* --- PALETA DE CORES PRINCIPAL --- */
-  --duo-green-primary: #056839; /* Verde principal (Botões de Salvar, Campo) */
-  --duo-blue: #1cb0f6; /* Azul (Passes Certos, Links) */
-  --duo-red: #650e14; /* Vermelho (Passes Errados, Botão Sair, Excluir) */
-  --duo-orange: #ff9600; /* Laranja (Interceptação, Modo Edição) */
-  --duo-purple: #9c27b0; /* Roxo (Finalizações, IA) */
-  --duo-yellow: #ffc800; /* Amarelo (Gols) */
+  --duo-green-primary: var(--cor-primaria);
+  /* Verde principal (Botões de Salvar, Campo) */
+  --duo-green-secondary: #008000;
+  /* verde para o passe certo o ponto também */
+  --duo-blue: #1CB0F6;
+  /* Azul (Passes Certos, Links) */
+  --duo-red: #FF0000;
+  /* Vermelho (Passes Errados, Botão Sair, Excluir) */
+  --duo-orange: #FF9600;
+  /* Laranja (Interceptação, Modo Edição) */
+  --duo-purple: #9C27B0;
+  /* Roxo (Finalizações, IA) */
+  --duo-yellow: #FFC800;
+  /* Amarelo (Gols) */
+  
 }
 
 /* --- MODO CLARO --- */
 body.light-mode {
+  --bg-body: #F0F2F5;
+  /* Fundo cinza gelo */
+  --bg-panel: #FFFFFF;
+  /* Fundo dos cartões/modais */
   --bg-primary: #f0f5f9;
-  --bg-secondary: #ffffff;
-  --text-main: #333333;
-  --border-ui: #d1d1d1;
-  --input-bg: #f0f0f0;
+  --bg-secondary: #E3E5E8;
+  --text-main: #202124;
+  --border-ui: #DADCE0;
+  --input-bg: #FFFFFF;
 }
 
 
@@ -42,8 +71,10 @@ body.light-mode {
 /* --- MODO DALTÔNICO --- */
 body.daltonico-mode {
   /* Troca o Verde e Vermelho por cores seguras para daltônicos */
-  --duo-green-primary: #1cb0f6; /* Vira Azul */
-  --duo-red: #ff9600; /* Vira Laranja */
+  --duo-green-primary: #1A73E8;
+  /* Vira Azul */
+  --duo-red: #F29900;
+  /* Vira Laranja */
 }
 
 /* ==================================================================
@@ -53,18 +84,21 @@ body.daltonico-mode {
 
 /* APLICANDO AS VARIÁVEIS NO SISTEMA */
 body {
-  background-color: var(--bg-primary);
+  background-color: var(--bg-body);
   color: var(--text-main);
   transition: 0.3s;
 }
+
 .duo-header,
 .duo-container,
 .duo-card,
 .duo-modal {
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-panel);
   color: var(--text-main);
+  border: 1px solid var(--border-ui);
   transition: 0.3s;
 }
+
 .jogador,
 .item-historico,
 .form-grupo input,
@@ -72,9 +106,11 @@ body {
   background-color: var(--input-bg);
   color: var(--text-main);
 }
+
 .jogador.ativo {
   border-color: var(--duo-green-primary);
 }
+
 h1,
 h2,
 h3,
@@ -83,12 +119,10 @@ h5,
 span {
   color: var(--text-main);
 }
-.cor-power {
-  color: #056839;
-}
-.cor-duo {
-  color:  var(--duo-blue);
 
+.cor-power,
+.cor-duo {
+  color: var(--cor-primaria);
 }
 
 /* Cabeçalho */
@@ -154,6 +188,7 @@ span {
   background-color: #5a5a5a;
   transform: scale(1.02);
 }
+
 .jogador.ativo {
   border: 3px solid var(--duo-green-primary);
   background-color: rgba(88, 204, 2, 0.1);
@@ -185,10 +220,12 @@ span {
 .campo-container {
   width: 100%;
   max-width: 800px;
-  aspect-ratio: 8 / 5; /* ISTO RESOLVE O PROBLEMA DO ZOOM E DAS ÁREAS CINZENTAS */
+  aspect-ratio: 8 / 5;
+  /* ISTO RESOLVE O PROBLEMA DO ZOOM E DAS ÁREAS CINZENTAS */
   position: relative;
   cursor: crosshair;
-  overflow: hidden; /* Corta qualquer clique que tente sair do campo */
+  overflow: hidden;
+  /* Corta qualquer clique que tente sair do campo */
 }
 
 .linha-tempo-container {
@@ -207,15 +244,18 @@ input[type="range"] {
   width: 800px;
   padding: 15px;
 }
+
 .reservas h4 {
   color: #888;
   font-size: 14px;
   margin-bottom: 5px;
 }
+
 .lista-reservas {
   display: flex;
   gap: 10px;
 }
+
 .lista-reservas .jogador {
   padding: 8px 12px;
   margin-bottom: 0;
@@ -226,6 +266,7 @@ input[type="range"] {
 .historico h3 {
   color: var(--duo-blue);
 }
+
 .duo-list {
   margin-top: 15px;
   overflow-y: auto;
@@ -233,18 +274,21 @@ input[type="range"] {
 }
 
 .item-historico {
+  background-color: var(--bg-panel); /* Fundo dinâmico */
+  color: var(--text-main); 
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 15px;
+  padding: 10px;
   background-color: #a39e9e;
   margin-bottom: 8px;
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 14px;
+  transition: background 0.2s;
 }
 
 .info-historico strong {
-  color: rgb(0, 0, 0);
+  color: black;
 }
 
 .btn-excluir {
@@ -255,6 +299,7 @@ input[type="range"] {
   opacity: 0.6;
   transition: opacity 0.2s;
 }
+
 .btn-excluir:hover {
   opacity: 1;
   transform: scale(1.1);
@@ -292,7 +337,8 @@ input[type="range"] {
   border-radius: 12px;
   font-weight: bold;
   font-size: 15px;
-  box-shadow: var(--shadow-duo); /* Sombra estilo Duolingo */
+  box-shadow: var(--shadow-duo);
+  /* Sombra estilo Duolingo */
   transition:
     filter 0.2s,
     transform 0.1s;
@@ -301,31 +347,42 @@ input[type="range"] {
 .btn-acao:active {
   transform: translateY(3px);
   box-shadow: none;
-} /* Simula o clique */
+}
+
+/* Simula o clique */
 .btn-acao:hover {
   filter: brightness(1.1);
 }
 
 /* Paleta de Cores para Botões de Ação (Referências imagem 2, 3) */
 .btn-duo-primary {
-  background-color: var(--duo-green-primary);
+  background-color: var(--cor-primaria);
+  color: #FFFFFF;
 }
+
 .btn-duo-azul {
   background-color: var(--duo-blue);
 }
+
 .btn-duo-vermelho {
-  background-color: var(--duo-red);
+  background-color: var(--cor-alerta);
+  color: #FFFFFFFF;
 }
+
 .btn-duo-laranja {
   background-color: var(--duo-orange);
 }
+
 .btn-duo-roxo {
   background-color: var(--duo-purple);
 }
+
 .btn-duo-amarelo {
   background-color: var(--duo-yellow);
   color: #333;
-} /* Amarelo precisa texto escuro */
+}
+
+/* Amarelo precisa texto escuro */
 
 .btn-cancelar {
   display: block;
@@ -338,6 +395,7 @@ input[type="range"] {
   font-weight: bold;
   margin-top: 10px;
 }
+
 .btn-cancelar:hover {
   color: var(--duo-red);
 }
@@ -350,41 +408,75 @@ input[type="range"] {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  transform: translate(-50%, -50%); /* Centraliza o ponto exato no mouse */
-  border: 3px solid var(--duo-white); /* Borda mais grossa estilo cartoon */
+  border: 2px solid white;/* Borda mais grossa estilo cartoon */
+  transform: translate(-50%, -50%);/* Centraliza o ponto exato no mouse */
   cursor: pointer;
-  box-shadow: 0px 3px 0px rgba(0, 0, 0, 0.3); /* Sombra 3D */
+  box-shadow: 0px 3px 0px rgba(0, 0, 0, 0.3);/* Sombra 3D */
   transition: transform 0.2s;
   z-index: 5;
 }
 
 /* Cores de cada ação conectadas com a nossa paleta Duolingo */
 .passe-certo {
-  background-color: var(--duo-blue);
+  background-color: var(--duo-green-secondary);
 }
+
 .passe-errado {
   background-color: var(--duo-red);
 }
+
 .interceptacao {
-  background-color: var(--duo-orange);
+  background-color: var(--duo-blue);
 }
+
 .finalizacao {
   background-color: var(--duo-purple);
 }
+
 .gol {
   background-color: var(--duo-yellow);
-  border-color: #333; /* Borda escura para dar destaque no amarelo */
+  border-color: #333;
+  /* Borda escura para dar destaque no amarelo */
   width: 22px;
   height: 22px;
+}
+
+/* HISTÓRICO - cores por tipo de ação */
+
+.item-passe-certo {
+  background-color: var(--duo-green-secondary);
+  color: white;
+}
+
+.item-passe-errado {
+  background-color: var(--duo-red);
+  color: white;
+}
+
+.item-interceptacao {
+  background-color: var(--duo-blue);
+  color: white;
+}
+
+.item-finalizacao {
+  background-color: var(--duo-purple);
+  color: white;
+}
+
+.item-gol {
+  background-color: var(--duo-yellow);
+  color: black;
 }
 
 /* Customização da Barra de Tempo (Mobile/Duolingo) */
 input[type="range"] {
   -webkit-appearance: none;
-  appearance: none; /* <-- Adicione esta linha para tirar o aviso */
+  appearance: none;
+  /* <-- Adicione esta linha para tirar o aviso */
   width: 100%;
   height: 8px;
-  background: var(--border-ui); /* Adaptável ao tema Claro/Escuro */
+  background: var(--border-ui);
+  /* Adaptável ao tema Claro/Escuro */
   border-radius: 5px;
   outline: none;
   margin-top: 15px;
@@ -407,7 +499,8 @@ input[type="range"]::-webkit-slider-thumb {
 
 /* Quando o usuário clica/pressiona o dedo na bolinha */
 input[type="range"]:active::-webkit-slider-thumb {
-  transform: scale(1.5); /* Ela cresce */
+  transform: scale(1.5);
+  /* Ela cresce */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
 }
 
@@ -426,9 +519,12 @@ input[type="range"]:active::-webkit-slider-thumb {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); /* Fundo levemente escurecido */
-  z-index: 90; /* Fica acima de tudo, mas abaixo do modal (que é 100) */
-  display: none; /* Começa escondido */
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Fundo levemente escurecido */
+  z-index: 90;
+  /* Fica acima de tudo, mas abaixo do modal (que é 100) */
+  display: none;
+  /* Começa escondido */
 }
 
 /* Quando adicionamos esta classe, o escudo aparece e bloqueia tudo */
@@ -445,12 +541,14 @@ input[type="range"]:active::-webkit-slider-thumb {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: var(--bg-primary); /* Respeita o modo Escuro/Claro! */
+  background-color: var(--bg-primary);
+  /* Respeita o modo Escuro/Claro! */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 999999; /* Fica acima de absolutamente tudo */
+  z-index: 999999;
+  /* Fica acima de absolutamente tudo */
   transition:
     opacity 0.5s ease-in-out,
     visibility 0.5s;
@@ -480,6 +578,7 @@ input[type="range"]:active::-webkit-slider-thumb {
   0% {
     transform: scale(1);
   }
+
   100% {
     transform: scale(1.1);
   }
@@ -489,6 +588,7 @@ input[type="range"]:active::-webkit-slider-thumb {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -512,6 +612,7 @@ input[type="range"]:active::-webkit-slider-thumb {
   margin: 50px auto;
   padding: 20px;
 }
+
 .card-home {
   text-align: center;
   padding: 40px;
@@ -519,15 +620,18 @@ input[type="range"]:active::-webkit-slider-thumb {
   transition: transform 0.2s;
   border: 2px solid transparent;
 }
+
 .card-home:hover {
   transform: translateY(-5px);
   border-color: var(--duo-green-primary);
 }
+
 .card-home i {
   font-size: 50px;
   display: block;
   margin-bottom: 15px;
 }
+
 .card-home p {
   color: #aaa;
   font-size: 14px;
@@ -542,6 +646,7 @@ input[type="range"]:active::-webkit-slider-thumb {
   margin: 20px auto;
   padding: 0 20px;
 }
+
 .filtro-container {
   background: var(--bg-secondary);
   padding: 15px 25px;
@@ -554,6 +659,7 @@ input[type="range"]:active::-webkit-slider-thumb {
   flex-wrap: wrap;
   gap: 15px;
 }
+
 .filtro-container select {
   background: var(--input-bg);
   color: var(--text-main);
@@ -574,6 +680,7 @@ input[type="range"]:active::-webkit-slider-thumb {
   gap: 20px;
   margin-bottom: 30px;
 }
+
 .kpi-card {
   background: var(--bg-secondary);
   padding: 20px;
@@ -582,12 +689,14 @@ input[type="range"]:active::-webkit-slider-thumb {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border-bottom: 4px solid var(--border-ui);
 }
+
 .kpi-card h3 {
   color: #aaa;
   font-size: 16px;
   margin-bottom: 10px;
   font-family: var(--font-primary);
 }
+
 .kpi-card .valor {
   font-size: 36px;
   font-weight: bold;
@@ -597,24 +706,31 @@ input[type="range"]:active::-webkit-slider-thumb {
 .kpi-gols {
   border-bottom-color: var(--duo-yellow);
 }
+
 .kpi-gols .valor {
   color: var(--duo-yellow);
 }
+
 .kpi-passes-c {
   border-bottom-color: var(--duo-blue);
 }
+
 .kpi-passes-c .valor {
   color: var(--duo-blue);
 }
+
 .kpi-passes-e {
   border-bottom-color: var(--duo-red);
 }
+
 .kpi-passes-e .valor {
   color: var(--duo-red);
 }
+
 .kpi-intercep {
   border-bottom-color: var(--duo-orange);
 }
+
 .kpi-intercep .valor {
   color: var(--duo-orange);
 }
@@ -628,6 +744,7 @@ input[type="range"]:active::-webkit-slider-thumb {
   border-left: 6px solid var(--duo-purple);
   margin-bottom: 30px;
 }
+
 .painel-ia p {
   font-size: 16px;
   line-height: 1.6;
@@ -640,6 +757,7 @@ input[type="range"]:active::-webkit-slider-thumb {
   grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
+
 @media (max-width: 900px) {
   .visao-dupla {
     grid-template-columns: 1fr;
@@ -653,6 +771,7 @@ input[type="range"]:active::-webkit-slider-thumb {
   border-radius: var(--radius-duo);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
+
 .heatmap-container {
   position: relative;
   width: 100%;
@@ -662,17 +781,16 @@ input[type="range"]:active::-webkit-slider-thumb {
   overflow: hidden;
   margin-top: 15px;
 }
+
 .mancha-calor {
   position: absolute;
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(255, 0, 0, 0.8) 0%,
-    rgba(255, 255, 0, 0.5) 40%,
-    rgba(0, 0, 0, 0) 70%
-  );
+  background: radial-gradient(circle,
+      rgba(255, 0, 0, 0.8) 0%,
+      rgba(255, 255, 0, 0.5) 40%,
+      rgba(0, 0, 0, 0) 70%);
   transform: translate(-50%, -50%);
   pointer-events: none;
   mix-blend-mode: screen;
@@ -691,6 +809,7 @@ input[type="range"]:active::-webkit-slider-thumb {
   margin: 30px auto;
   padding: 0 20px;
 }
+
 @media (max-width: 900px) {
   .elenco-layout {
     grid-template-columns: 1fr;
@@ -701,12 +820,14 @@ input[type="range"]:active::-webkit-slider-thumb {
   margin-bottom: 15px;
   text-align: left;
 }
+
 .form-grupo label {
   display: block;
   margin-bottom: 5px;
   font-size: 14px;
   color: #aaa;
 }
+
 .form-grupo input {
   width: 100%;
   padding: 12px;
@@ -716,6 +837,7 @@ input[type="range"]:active::-webkit-slider-thumb {
   color: var(--text-main);
   font-family: var(--font-primary);
 }
+
 .form-grupo input:focus {
   border-color: var(--duo-green-primary);
   outline: none;
@@ -727,6 +849,7 @@ input[type="range"]:active::-webkit-slider-thumb {
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 15px;
 }
+
 .card-atleta {
   background: var(--bg-secondary);
   border-radius: var(--radius-duo);
@@ -737,10 +860,12 @@ input[type="range"]:active::-webkit-slider-thumb {
   border: 2px solid transparent;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
+
 .card-atleta:hover {
   border-color: var(--duo-green-primary);
   transform: translateY(-5px);
 }
+
 .card-atleta .foto-grande {
   width: 80px;
   height: 80px;
@@ -764,6 +889,7 @@ input[type="range"]:active::-webkit-slider-thumb {
   overflow-y: auto;
   padding: 30px;
 }
+
 .perfil-header {
   display: flex;
   align-items: center;
@@ -772,23 +898,27 @@ input[type="range"]:active::-webkit-slider-thumb {
   border-bottom: 2px solid var(--border-ui);
   padding-bottom: 20px;
 }
+
 .perfil-kpis {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 10px;
   margin-bottom: 20px;
 }
+
 .kpi-mini {
   background: var(--input-bg);
   padding: 15px;
   border-radius: 12px;
   text-align: center;
 }
+
 .kpi-mini h5 {
   color: #aaa;
   margin-bottom: 5px;
   font-size: 12px;
 }
+
 .kpi-mini .val {
   font-size: 24px;
   font-weight: bold;
@@ -803,17 +933,16 @@ input[type="range"]:active::-webkit-slider-thumb {
   border-radius: 15px;
   overflow: hidden;
 }
+
 .mancha-calor {
   position: absolute;
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(255, 0, 0, 0.8) 0%,
-    rgba(255, 255, 0, 0.5) 40%,
-    rgba(0, 0, 0, 0) 70%
-  );
+  background: radial-gradient(circle,
+      rgba(255, 0, 0, 0.8) 0%,
+      rgba(255, 255, 0, 0.5) 40%,
+      rgba(0, 0, 0, 0) 70%);
   transform: translate(-50%, -50%);
   pointer-events: none;
   mix-blend-mode: screen;
@@ -829,9 +958,11 @@ input[type="range"]:active::-webkit-slider-thumb {
   margin: 30px auto;
   padding-bottom: 30px;
 }
+
 .form-grupo {
   margin-bottom: 15px;
 }
+
 .form-grupo input {
   width: 100%;
   padding: 12px;
@@ -840,10 +971,12 @@ input[type="range"]:active::-webkit-slider-thumb {
   font-family: var(--font-primary);
   font-size: 16px;
 }
+
 .form-grupo input:focus {
   border-color: var(--duo-green-primary);
   outline: none;
 }
+
 .slots-grid {
   display: flex;
   gap: 15px;
@@ -851,6 +984,7 @@ input[type="range"]:active::-webkit-slider-thumb {
   flex-wrap: wrap;
   justify-content: center;
 }
+
 .slot {
   width: 80px;
   height: 100px;
@@ -865,10 +999,12 @@ input[type="range"]:active::-webkit-slider-thumb {
   transition: 0.2s;
   overflow: hidden;
 }
+
 .slot:hover {
   border-color: var(--duo-green-primary);
   filter: brightness(1.1);
 }
+
 .slot-foto {
   width: 50px;
   height: 50px;
@@ -881,6 +1017,7 @@ input[type="range"]:active::-webkit-slider-thumb {
   font-size: 24px;
   color: #666;
 }
+
 .slot-nome {
   font-size: 12px;
   text-align: center;
@@ -891,18 +1028,22 @@ input[type="range"]:active::-webkit-slider-thumb {
   width: 100%;
   padding: 0 5px;
 }
+
 .slot.preenchido {
   border: 2px solid var(--duo-green-primary);
   background-color: rgba(88, 204, 2, 0.1);
 }
+
 .slot.preenchido .slot-foto {
   background-color: var(--duo-green-primary);
   color: white;
 }
+
 .slot.preenchido .slot-nome {
   color: var(--text-main);
   font-weight: bold;
 }
+
 .gaveta-overlay {
   position: fixed;
   top: 0;
@@ -913,6 +1054,7 @@ input[type="range"]:active::-webkit-slider-thumb {
   display: none;
   z-index: 90;
 }
+
 .gaveta {
   position: fixed;
   bottom: -100%;
@@ -928,9 +1070,11 @@ input[type="range"]:active::-webkit-slider-thumb {
   max-height: 70vh;
   overflow-y: auto;
 }
+
 .gaveta.aberta {
   bottom: 0;
 }
+
 .jogador-item {
   display: flex;
   align-items: center;
@@ -940,14 +1084,17 @@ input[type="range"]:active::-webkit-slider-thumb {
   border-radius: 12px;
   cursor: pointer;
 }
+
 .jogador-item:hover {
   filter: brightness(1.1);
 }
+
 .jogador-item .foto {
   width: 40px;
   height: 40px;
   margin-right: 15px;
 }
+
 #mensagem-erro {
   color: var(--duo-red);
   text-align: center;
@@ -967,6 +1114,7 @@ body.login-page {
   align-items: center;
   height: 100vh;
 }
+
 .login-box {
   background-color: var(--bg-secondary);
   padding: 40px;
@@ -977,21 +1125,25 @@ body.login-page {
   max-width: 400px;
   border: 2px solid var(--border-ui);
 }
+
 .login-box h1 {
   font-size: 36px;
   margin-bottom: 10px;
 }
+
 .login-box p {
   color: #aaa;
   margin-bottom: 30px;
   font-size: 15px;
 }
+
 #mensagem-erro {
   color: var(--duo-red);
   margin-top: 15px;
   font-weight: bold;
   display: none;
 }
+
 .btn-dev {
   margin-top: 20px;
   background: none;
@@ -1002,6 +1154,7 @@ body.login-page {
   padding: 5px 10px;
   border-radius: 5px;
 }
+
 .btn-dev:hover {
   color: var(--text-main);
   border-color: var(--text-main);
