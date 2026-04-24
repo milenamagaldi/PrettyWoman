@@ -339,7 +339,7 @@ function renderizarMapaELista() {
     lFilt.forEach(lance => {
         if (lance.tipo_acao === 'Substituição') {
             const item = document.createElement('div'); item.classList.add('item-historico');
-            item.style.backgroundColor = lance.atleta_id === atletaIdSelecionado ? '#e67e22'  : '#27ae60'; // entrou → verde diferente
+            item.style.backgroundColor = lance.atleta_id === atletaIdSelecionado ? '#d64444'  : '#33c93a'; // entrou → verde diferente
 
             // A BLINDAGEM DO CARTÃO VERDE (Sem botão de excluir)
             if (lance.atleta_id === atletaIdSelecionado) {
@@ -397,10 +397,33 @@ document.getElementById('btn-salvar-edicao').addEventListener('click', () => {
         .then(() => { dadosAlterados = true; carregarDadosDoBanco(); modalEdicao.classList.add('escondido'); escudoBloqueio.classList.remove('ativo'); });
 });
 
+// document.getElementById('btn-eliminar-definitivo').addEventListener('click', () => {
+//     mostrarConfirmCustom("Excluir Lance", "Deseja realmente apagar esta ação da partida?", "btn-duo-vermelho", "Sim, Excluir", () => {
+//         fetch(`http://localhost:3000/api/eventos/${idLanceEmEdicao}`, { method: 'DELETE' }).then(() => { dadosAlterados = true; carregarDadosDoBanco(); modalEdicao.classList.add('escondido'); escudoBloqueio.classList.remove('ativo'); });
+//     });
+// });
+
 document.getElementById('btn-eliminar-definitivo').addEventListener('click', () => {
-    mostrarConfirmCustom("Excluir Lance", "Deseja realmente apagar esta ação da partida?", "btn-duo-vermelho", "Sim, Excluir", () => {
-        fetch(`http://localhost:3000/api/eventos/${idLanceEmEdicao}`, { method: 'DELETE' }).then(() => { dadosAlterados = true; carregarDadosDoBanco(); modalEdicao.classList.add('escondido'); escudoBloqueio.classList.remove('ativo'); });
-    });
+
+    // 🔥 FECHA O MODAL ATUAL PRIMEIRO
+    modalEdicao.classList.add('escondido');
+
+    mostrarConfirmCustom(
+        "Excluir Lance",
+        "Deseja realmente apagar esta ação da partida?",
+        "btn-duo-vermelho",
+        "Sim, Excluir",
+        () => {
+            fetch(`http://localhost:3000/api/eventos/${idLanceEmEdicao}`, { method: 'DELETE' })
+                .then(() => {
+                    dadosAlterados = true;
+                    carregarDadosDoBanco();
+
+                    // 🔥 GARANTE QUE O BLOQUEIO SOME SÓ NO FINAL
+                    escudoBloqueio.classList.remove('ativo');
+                });
+        }
+    );
 });
 
 // A INTELIGÊNCIA EM CASCATA (EFEITO DOMINÓ)

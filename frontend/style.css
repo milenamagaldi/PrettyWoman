@@ -288,7 +288,7 @@ input[type="range"] {
 }
 
 .info-historico strong {
-  color: black;
+  color: var(--text-main);
 }
 
 .btn-excluir {
@@ -308,7 +308,7 @@ input[type="range"] {
 /* Modal de Ações (Design Arredondado Duolingo) */
 .duo-modal {
   position: absolute;
-  background-color: var(--duo-gray-2);
+  background-color: var(--text-secundary);
   border: 3px solid var(--duo-green-primary);
   padding: 20px;
   border-radius: var(--radius-duo);
@@ -390,7 +390,7 @@ input[type="range"] {
   padding: 10px;
   cursor: pointer;
   background: none;
-  color: #888;
+  color: var(--text-main);
   border: none;
   font-weight: bold;
   margin-top: 10px;
@@ -465,7 +465,7 @@ input[type="range"] {
 
 .item-gol {
   background-color: var(--duo-yellow);
-  color: black;
+  color: var(--text-main);
 }
 
 /* Customização da Barra de Tempo (Mobile/Duolingo) */
@@ -825,7 +825,7 @@ input[type="range"]:active::-webkit-slider-thumb {
   display: block;
   margin-bottom: 5px;
   font-size: 14px;
-  color: #aaa;
+  color:#aaa;
 }
 
 .form-grupo input {
@@ -836,6 +836,7 @@ input[type="range"]:active::-webkit-slider-thumb {
   background: var(--input-bg);
   color: var(--text-main);
   font-family: var(--font-primary);
+  box-sizing: border-box;
 }
 
 .form-grupo input:focus {

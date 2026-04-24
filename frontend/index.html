@@ -25,7 +25,7 @@
     <div id="escudo-bloqueio" class="bloqueio-tela"></div>
 
     <header class="duo-header">
-      <div class="logo"><span class="cor-power">Power</span>Scout</div>
+      <div class="logo"><span class="cor-power">Power</span>Soccer</div>
 
       <div style="display: flex; gap: 15px; align-items: center">
         <a
@@ -174,13 +174,13 @@
     <div id="modal-acao" class="escondido duo-modal">
       <h4 id="modal-titulo">Ação aos 00:00</h4>
       <div class="botoes-acao">
-        <button class="btn-acao btn-duo-azul" data-tipo="Passe Certo">
+        <button class="btn-acao btn-duo-primary" data-tipo="Passe Certo">
           Passe Certo
         </button>
-        <button class="btn-acao btn-duo-vermelho" data-tipo="Passe Errado">
+        <button class="btn-acao item-passe-errado" data-tipo="Passe Errado">
           Passe Errado
         </button>
-        <button class="btn-acao btn-duo-laranja" data-tipo="Interceptação">
+        <button class="btn-acao btn-duo-azul" data-tipo="Interceptação">
           Interceptação
         </button>
         <button class="btn-acao btn-duo-roxo" data-tipo="Finalização">
@@ -198,7 +198,7 @@
     >
       <h4>⚙️ Opções do Lance</h4>
       <div style="margin: 15px 0; text-align: left">
-        <label style="font-size: 14px; color: #aaa">Alterar Ação:</label>
+        <label style="font-size: 14px; color: #000000">Alterar Ação:</label>
         <select
           id="editar-tipo-acao"
           style="
@@ -218,7 +218,7 @@
           <option value="Gol">Gol</option>
         </select>
         <label
-          style="font-size: 14px; color: #aaa; display: block; margin-top: 10px"
+          style="font-size: 14px; color: #000000; display: block; margin-top: 10px"
           >Alterar Minuto (MM:SS):</label
         >
         <input
@@ -232,7 +232,7 @@
             background: #444;
             color: white;
             border: none;
-            text-align: center;
+            box-sizing: border-box;
           "
         />
       </div>
@@ -305,7 +305,7 @@
         z-index: 200;
       "
     >
-      <h4 id="titulo-confirm-custom" style="color: var(--duo-orange)">
+      <h4 id="titulo-confirm-custom" style="color: var(--text-main)">
         Atenção
       </h4>
       <p
@@ -337,14 +337,14 @@
       <div class="form-grupo" style="text-align: left">
         <label
           style="
-            color: #aaa;
+            color: var(--text-main);
             font-size: 14px;
             margin-bottom: 5px;
             display: block;
-          "
+            "
           >Aparência</label
-        >
-        <button
+          >
+          <button
           id="toggle-tema"
           class="btn-acao"
           style="
@@ -352,15 +352,15 @@
             background: var(--input-bg);
             color: var(--text-main);
             border: 2px solid transparent;
-          "
+            "
         >
-          🌙 Modo Escuro Ativo
-        </button>
-      </div>
-      <div class="form-grupo" style="margin-top: 20px; text-align: left">
-        <label
-          style="
-            color: #aaa;
+        🌙 Modo Escuro Ativo
+      </button>
+    </div>
+    <div class="form-grupo" style="margin-top: 20px; text-align: left">
+      <label
+      style="
+            color: var(--text-main);
             font-size: 14px;
             margin-bottom: 5px;
             display: block;
